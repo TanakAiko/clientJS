@@ -1,5 +1,40 @@
 var ws
 
+document.addEventListener("DOMContentLoaded", async function () {
+    const sessionId = getCookieValue("sessionID")
+    console.log("sessionId: ", sessionId);
+    if (sessionId) {
+        const urlAuthorized = 'http://localhost:8080/authorized'
+        try {
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionID: sessionId }),
+                credentials: 'include',
+            };
+            const response = await fetch(urlAuthorized, requestOptions)
+
+            if (!response.ok) {
+                throw new Error(`HTTP error status: ${response.status}`);
+            }
+            const result = await response.json()
+            console.log(result)
+            if (response.status === 202) {
+                ws = new WebSocket("ws://localhost:8080/ws");
+
+                ws.onopen = function () {
+                    console.log("Connection is open...");
+                };
+            }
+        } catch (error) {
+            console.error(`Error while sending data`, error);
+        }
+    } else console.log("no cookie named 'sessionID'");
+
+})
+
+console.log("AAAAA");
+
 function toggleForms() {
     var loginForm = document.getElementById('loginForm');
     var registerForm = document.getElementById('registerForm');
@@ -36,7 +71,7 @@ registerFormID.addEventListener("submit", async (event) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
-            credential: 'include',
+            credentials: 'include',
         };
         const response = await fetch(urlRegister, requestOptions)
 
@@ -99,7 +134,7 @@ loginFormID.addEventListener("submit", async (event) => {
 var logoutButton = document.getElementById("logoutButton")
 logoutButton.addEventListener("click", (event) => {
     event.preventDefault()
-    const sessionId = getCookieValue("sessionID")
+    sessionId = getCookieValue("sessionID")
 
     if (ws && sessionId) {
         ws.send(JSON.stringify({ action: "logout", data: sessionId }));
