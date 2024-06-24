@@ -1,10 +1,12 @@
+const getwayURL = "http://localhost:8080"
+const wsURL = "ws://localhost:8080/ws"
 var ws
 
 document.addEventListener("DOMContentLoaded", async function () {
     const sessionId = getCookieValue("sessionID")
     console.log("sessionId: ", sessionId);
     if (sessionId) {
-        const urlAuthorized = 'http://localhost:8080/authorized'
+        const urlAuthorized = `${getwayURL}/authorized`
         try {
             const requestOptions = {
                 method: 'POST',
@@ -20,11 +22,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             const result = await response.json()
             console.log(result)
             if (response.status === 202) {
-                ws = new WebSocket("ws://localhost:8080/ws");
+                ws = new WebSocket(wsURL);
 
-                ws.onopen = function () {
-                    console.log("Connection is open...");
-                };
+                ws.onopen = onOpen
+
+                ws.onmessage = onMessage
+
+                ws.onerror = onError
+
+                ws.onclose = onClose
             }
         } catch (error) {
             console.error(`Error while sending data`, error);
@@ -32,8 +38,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     } else console.log("no cookie named 'sessionID'");
 
 })
-
-console.log("AAAAA");
 
 function toggleForms() {
     var loginForm = document.getElementById('loginForm');
@@ -62,7 +66,7 @@ function toggleForms() {
 var registerFormID = document.getElementById("registerFormID")
 registerFormID.addEventListener("submit", async (event) => {
     event.preventDefault()
-    const urlRegister = 'http://localhost:8080/register'
+    const urlRegister = `${getwayURL}/register`
     const data = getDataForm(registerFormID)
     data.age = strToInt(data.age)
 
@@ -92,7 +96,7 @@ registerFormID.addEventListener("submit", async (event) => {
 var loginFormID = document.getElementById("loginFormID")
 loginFormID.addEventListener("submit", async (event) => {
     event.preventDefault()
-    urlLogin = 'http://localhost:8080/login'
+    urlLogin = `${getwayURL}/login`
     const data = getDataForm(loginFormID)
 
     try {
@@ -110,19 +114,15 @@ loginFormID.addEventListener("submit", async (event) => {
         const result = await response.json()
         console.log(result);
 
-        ws = new WebSocket("ws://localhost:8080/ws");
+        ws = new WebSocket(wsURL);
 
-        ws.onopen = function () {
-            console.log("Connection is open...");
-        };
+        ws.onopen = onOpen
 
         ws.onmessage = onMessage
 
         ws.onerror = onError
 
-        ws.onclose = function () {
-            console.log("Connection closed !!!");
-        };
+        ws.onclose = onClose
 
     } catch (error) {
         console.error(error);
@@ -164,6 +164,14 @@ function onMessage(event) {
 
 function onError(error) {
     console.error('WebSocket error:', error);
+}
+
+function onOpen() {
+    console.log("Connection is open...");
+}
+
+function onClose() {
+    console.log("Connection closed !!!");
 }
 
 //********************************************************************************************************************** */
