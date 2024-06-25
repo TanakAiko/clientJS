@@ -155,7 +155,7 @@ function onMessage(event) {
             break;
         case 'logout':
             console.log('Server replied (', msg.action, '): ', msg.data);
-            deleteCookie("sessionID")
+            if (msg.data !== "error") deleteCookie("sessionID")
             break;
         default:
             console.log('Unknown action:', msg.action);
