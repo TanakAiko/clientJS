@@ -1,6 +1,10 @@
+import { setPage } from "./setPage.js";
+import { homePage, loginRegisterPage } from "./constants.js";
 const getwayURL = "http://localhost:8080"
 const wsURL = "ws://localhost:8080/ws"
 var ws
+
+//********************************************************************************************************************** */
 
 document.addEventListener("DOMContentLoaded", async function () {
     const sessionId = getCookieValue("sessionID")
@@ -22,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const result = await response.json()
             console.log(result)
             if (response.status === 202) {
+                setPage(homePage)
                 ws = new WebSocket(wsURL);
 
                 ws.onopen = onOpen
@@ -35,36 +40,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (error) {
             console.error(`Error while sending data`, error);
         }
-    } else console.log("no cookie named 'sessionID'");
+    } else {
+        setPage(loginRegisterPage)
+        console.log("no cookie named 'sessionID'");
+    } 
 
 })
 
-function toggleForms() {
-    var loginForm = document.getElementById('loginForm');
-    var registerForm = document.getElementById('registerForm');
-    if (loginForm.style.display === "none") {
-        loginForm.classList.remove('fade-out');
-        loginForm.classList.add('fade-in');
-        registerForm.classList.remove('fade-in');
-        registerForm.classList.add('fade-out');
-        setTimeout(function () {
-            loginForm.style.display = "block";
-            registerForm.style.display = "none";
-        }, 500);
-    } else {
-        loginForm.classList.remove('fade-in');
-        loginForm.classList.add('fade-out');
-        registerForm.classList.remove('fade-out');
-        registerForm.classList.add('fade-in');
-        setTimeout(function () {
-            loginForm.style.display = "none";
-            registerForm.style.display = "block";
-        }, 500);
-    }
-}
-
 var registerFormID = document.getElementById("registerFormID")
-registerFormID.addEventListener("submit", async (event) => {
+registerFormID?.addEventListener("submit", async (event) => {
     event.preventDefault()
     const urlRegister = `${getwayURL}/register`
     const data = getDataForm(registerFormID)
@@ -94,7 +78,7 @@ registerFormID.addEventListener("submit", async (event) => {
 
 
 var loginFormID = document.getElementById("loginFormID")
-loginFormID.addEventListener("submit", async (event) => {
+loginFormID?.addEventListener("submit", async (event) => {
     event.preventDefault()
     urlLogin = `${getwayURL}/login`
     const data = getDataForm(loginFormID)
@@ -114,6 +98,7 @@ loginFormID.addEventListener("submit", async (event) => {
         const result = await response.json()
         console.log(result);
 
+        setPage(homePage)
         ws = new WebSocket(wsURL);
 
         ws.onopen = onOpen
@@ -129,10 +114,9 @@ loginFormID.addEventListener("submit", async (event) => {
     }
 })
 
-//********************************************************************************************************************** */
 
 var logoutButton = document.getElementById("logoutButton")
-logoutButton.addEventListener("click", (event) => {
+logoutButton?.addEventListener("click", (event) => {
     event.preventDefault()
     sessionId = getCookieValue("sessionID")
 
@@ -175,6 +159,32 @@ function onClose() {
 }
 
 //********************************************************************************************************************** */
+
+function toggleForms() {
+    var loginForm = document.getElementById('loginForm');
+    var registerForm = document.getElementById('registerForm');
+    if (loginForm.style.display === "none") {
+        loginForm.classList.remove('fade-out');
+        loginForm.classList.add('fade-in');
+        registerForm.classList.remove('fade-in');
+        registerForm.classList.add('fade-out');
+        setTimeout(function () {
+            loginForm.style.display = "block";
+            registerForm.style.display = "none";
+        }, 500);
+    } else {
+        loginForm.classList.remove('fade-in');
+        loginForm.classList.add('fade-out');
+        registerForm.classList.remove('fade-out');
+        registerForm.classList.add('fade-in');
+        setTimeout(function () {
+            loginForm.style.display = "none";
+            registerForm.style.display = "block";
+        }, 500);
+    }
+}
+
+window.toggleForms = toggleForms
 
 function getDataForm(form) {
     const dataForm = new FormData(form)
