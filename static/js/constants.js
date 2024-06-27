@@ -1,3 +1,9 @@
+export var app = {
+    ws: null
+}
+export const getwayURL = "http://localhost:8080"
+export const wsURL = "ws://localhost:8080/ws"
+
 export const loginRegisterPage = `<div class="title">
     <h1>Welcome to our <br> Real Time Forum</h1>
 </div>
@@ -16,7 +22,7 @@ export const loginRegisterPage = `<div class="title">
             </div>
             <button id="loginButton" type="submit">Login</button>
         </form>
-        <p>Don't have an account? <a onclick="toggleForms()">Register</a></p>
+        <p>Don't have an account? <a id="goToRegister">Register</a></p>
     </div>
 
     <!-- Register Form -->
@@ -36,7 +42,6 @@ export const loginRegisterPage = `<div class="title">
                 <select id="gender" name="gender" required>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
-                    <option value="Other">Other</option>
                 </select>
             </div>
             <div class="form-group">
@@ -57,7 +62,7 @@ export const loginRegisterPage = `<div class="title">
             </div>
             <button id="registerButton" type="submit">Register</button>
         </form>
-        <p>Already have an account? <a onclick="toggleForms()">Login</a></p>
+        <p>Already have an account? <a id="goToLogin">Login</a></p>
     </div>
 </div>`
 

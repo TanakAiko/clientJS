@@ -10,9 +10,16 @@ body {
     margin-right: 250px;
 }
 
+#app {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .title {
     color: #fff;
-    font-size: 40px;
+    font-size: 4vh;
     margin-left: 50px;
     text-align: center;
 }
