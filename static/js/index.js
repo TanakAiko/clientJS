@@ -25,7 +25,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 app.ws = new WebSocket(wsURL);
                 
                 setHomePage()
-                console.log("Here log setHome");
                 
                 app.ws.onopen = onOpen
 
@@ -40,8 +39,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     } else {
         setLoginRegisterPage()
-        console.log("Here log setLoginRegister");
-
         console.log("no cookie named 'sessionID'");
     }
 
