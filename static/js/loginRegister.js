@@ -1,6 +1,6 @@
-import { setPage } from "./setPage.js";
+import { setHomePage } from "./setPage.js";
 import { onClose, onOpen, onError, onMessage } from "./tools.js";
-import { homePage, getwayURL, wsURL, app } from "./constants.js";
+import { getwayURL, wsURL, app } from "./constants.js";
 
 export async function setLoginRegister() {
     var registerFormID = document.getElementById("registerFormID")
@@ -53,7 +53,8 @@ export async function setLoginRegister() {
             const result = await response.json()
             console.log(result);
 
-            setPage(homePage)
+            setHomePage()
+            
             app.ws = new WebSocket(wsURL);
 
             app.ws.onopen = onOpen

@@ -1,5 +1,4 @@
-import { setPage } from "./setPage.js";
-import { loginRegisterPage} from "./constants.js";
+import { setLoginRegisterPage } from "./setPage.js";
 
 export function onMessage(event) {
     const msg = JSON.parse(event.data);
@@ -13,7 +12,7 @@ export function onMessage(event) {
             console.log('Server replied (', msg.action, '): ', msg.data);
             if (msg.data !== "error") {
                 deleteCookie("sessionID")
-                setPage(loginRegisterPage)
+                setLoginRegisterPage()
             }
 
             break;

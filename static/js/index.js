@@ -1,8 +1,6 @@
-import { setPage } from "./setPage.js";
-import { homePage, loginRegisterPage, getwayURL, wsURL, app } from "./constants.js";
+import { setHomePage, setLoginRegisterPage } from "./setPage.js";
+import { getwayURL, wsURL, app } from "./constants.js";
 import { getCookieValue, onClose, onOpen, onError, onMessage } from "./tools.js";
-import { setLoginRegister } from "./loginRegister.js";
-import { setHome } from "./home.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
     const sessionId = getCookieValue("sessionID")
@@ -26,8 +24,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (response.status === 202) {
                 app.ws = new WebSocket(wsURL);
                 
-                setPage(homePage)
-                setHome()
+                setHomePage()
                 console.log("Here log setHome");
                 
                 app.ws.onopen = onOpen
@@ -42,8 +39,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error(`Error while sending data`, error);
         }
     } else {
-        setPage(loginRegisterPage)
-        setLoginRegister()
+        setLoginRegisterPage()
         console.log("Here log setLoginRegister");
 
         console.log("no cookie named 'sessionID'");
