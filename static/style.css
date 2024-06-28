@@ -1,17 +1,19 @@
 :root {
-    --light-green: #5bbb5e;
+    --white: #fff;
+    --light-grey: #bababa;
     --dark-green: #348238;
+    --dark-grey: #333333;
+    
+    --light-green: #5bbb5e;
     --dark-orange: #FF5722;
     --middle-blue: #303F9F;
-    --white: #fff;
     --black: #131010;
     --very-dark-grey: #121212;
-    --dark-grey: #333333;
 }
 
 body {
     font-family: Arial, sans-serif;
-    background-color: var(--dark-grey);
+    background-color: var(--light-grey);
 }
 
 #loginRegister {
@@ -30,16 +32,16 @@ body {
 }
 
 #welcomText {
-    color: var(--white);
+    color: var(--dark-green);
     font-size: 2.2em;
     margin-left: 10vh;
 }
 
 .container {
-    background-color: #fff;
+    background-color: var(--light-grey);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 40px var(--dark-green);
 
     width: fit-content;
     height: fit-content;
@@ -68,14 +70,14 @@ select {
     width: 300px;
     padding: 8px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
+    border: 1px solid var(--dark-green);
     border-radius: 4px;
 }
 
 button {
     width: 100%;
     padding: 10px;
-    background-color: var(--light-green);
+    background-color: var(--dark-green);
     color: white;
     border: none;
     border-radius: 4px;
@@ -84,7 +86,7 @@ button {
 }
 
 button:hover {
-    background-color: var(--dark-green);
+    background-color: var(--light-green);
 }
 
 p {
@@ -93,12 +95,13 @@ p {
 }
 
 a {
-    color: var(--light-green);
+    color: var(--dark-green);
     text-decoration: none;
     font-weight: bold;
 }
 
 a:hover {
+    color: var(--light-green);
     text-decoration: underline;
 }
 
