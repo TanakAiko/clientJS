@@ -3,7 +3,9 @@ import { onClose, onOpen, onError, onMessage } from "./tools.js";
 import { getwayURL, wsURL, app } from "./constants.js";
 
 export async function setLoginRegister() {
-    var registerFormID = document.getElementById("registerFormID")
+    const loginError = document.getElementById('loginError')
+    
+    const registerFormID = document.getElementById("registerFormID")
     registerFormID?.addEventListener("submit", async (event) => {
         event.preventDefault()
         const urlRegister = `${getwayURL}/register`
@@ -32,7 +34,7 @@ export async function setLoginRegister() {
 
     })
 
-    var loginFormID = document.getElementById("loginFormID")
+    const loginFormID = document.getElementById("loginFormID")
     loginFormID?.addEventListener("submit", async (event) => {
         event.preventDefault()
         const urlLogin = `${getwayURL}/login`
@@ -48,11 +50,12 @@ export async function setLoginRegister() {
             const response = await fetch(urlLogin, requestOptions)
 
             if (!response.ok) {
+                loginError.style.display = 'block'
                 throw new Error(`HTTP error status: ${response.status}`);
-            }
+            } else loginError.style.display = 'none'
             const result = await response.json()
             console.log(result);
-
+            app.user = result
             setHomePage()
             
             app.ws = new WebSocket(wsURL);
@@ -82,6 +85,75 @@ export async function setLoginRegister() {
         toggleForms()
     })
 }
+
+export const loginRegisterPage = `<div id="loginRegister">
+
+    <div id="welcomText">
+        <h1>Welcome to our <br> Real Time Forum</h1>
+    </div>
+    <div class="container">
+
+        <!-- Login Form -->
+        <div id="loginForm" class="form-container">
+            <h2>Login</h2>
+            <p id="loginError" style="color:red; display:none;">Username or Password incorrect.</p>
+            <form id="loginFormID">
+                <div class="form-group">
+                    <label for="email_username">E-mail or Username</label>
+                    <input type="text" id="email_username" name="identifier" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="passwordLogin" name="password" required>
+                </div>
+                <button id="loginButton" type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="" id="goToRegister">Register</a></p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="form-container" style="display: none;">
+            <h2>Register</h2>
+            <form id="registerFormID">
+                <div class="form-group">
+                    <label for="nickname">Nickname</label>
+                    <input type="text" id="nickname" name="nickname" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="passwordRegister" name="password" required>
+                </div>
+                <button id="registerButton" type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="" id="goToLogin">Login</a></p>
+        </div>
+
+    </div>
+
+</div>`
 
 function toggleForms() {
     var loginForm = document.getElementById('loginForm');

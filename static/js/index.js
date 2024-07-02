@@ -1,31 +1,21 @@
+import { getCookieValue, onClose, onOpen, onError, onMessage, testSession, getUserData } from "./tools.js";
 import { setHomePage, setLoginRegisterPage } from "./setPage.js";
-import { getwayURL, wsURL, app } from "./constants.js";
-import { getCookieValue, onClose, onOpen, onError, onMessage } from "./tools.js";
+import { wsURL, app } from "./constants.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
     const sessionId = getCookieValue("sessionID")
     console.log("sessionId: ", sessionId);
     if (sessionId) {
-        const urlAuthorized = `${getwayURL}/authorized`
-        try {
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ sessionID: sessionId }),
-                credentials: 'include',
-            };
-            const response = await fetch(urlAuthorized, requestOptions)
-
-            if (!response.ok) {
-                throw new Error(`HTTP error status: ${response.status}`);
-            }
-            const result = await response.json()
-            console.log(result)
-            if (response.status === 202) {
-                app.ws = new WebSocket(wsURL);
-                
+        const response = await testSession(sessionId)
+        if (response !== 0) {
+            const userData = await getUserData(sessionId)
+            if (userData !== 0) {
+                console.log("GetUserData (new) : ", userData);
+                app.user = userData
                 setHomePage()
-                
+
+                app.ws = new WebSocket(wsURL);
+
                 app.ws.onopen = onOpen
 
                 app.ws.onmessage = onMessage
@@ -34,12 +24,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 app.ws.onclose = onClose
             }
-        } catch (error) {
-            console.error(`Error while sending data`, error);
         }
     } else {
         setLoginRegisterPage()
         console.log("no cookie named 'sessionID'");
     }
-
 })

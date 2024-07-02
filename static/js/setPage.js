@@ -1,6 +1,5 @@
-import { homePage, loginRegisterPage } from "./constants.js";
-import { setHome } from "./home.js";
-import { setLoginRegister } from "./loginRegister.js";
+import { setHome, homePage } from "./home.js";
+import { setLoginRegister, loginRegisterPage } from "./loginRegister.js";
 
 
 export function setHomePage() {
