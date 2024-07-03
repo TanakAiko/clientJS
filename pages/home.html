@@ -8,7 +8,7 @@
                     <hr>
 
                     <label for="psw"><b>Description:</b></label>
-                    <input type="text" placeholder="Enter Description" name="description" id="psw" required>
+                    <input type="text" placeholder="Enter Description" name="content" id="psw" required>
 
 
                     <div class="categorieCreatePost">
@@ -16,31 +16,31 @@
                             <legend>Choose categories</legend>
                             <div class="createPostCheckboxContainer">
                                 <label>
-                                    <input type="checkbox" name="categories" value="Anime">
+                                    <input type="checkbox" name="categorie" value="Anime">
                                     Anime
                                 </label>
                                 <label>
-                                    <input type="checkbox" name="categories" value="Manga">
+                                    <input type="checkbox" name="categorie" value="Manga">
                                     Manga
                                 </label>
                                 <label>
-                                    <input type="checkbox" name="categories" value="Politique">
+                                    <input type="checkbox" name="categorie" value="Politique">
                                     Politique
                                 </label>
                                 <label>
-                                    <input type="checkbox" name="categories" value="Sport">
+                                    <input type="checkbox" name="categorie" value="Sport">
                                     Sport
                                 </label>
                                 <label>
-                                    <input type="checkbox" name="categories" value="Science">
+                                    <input type="checkbox" name="categorie" value="Science">
                                     Science
                                 </label>
                                 <label>
-                                    <input type="checkbox" name="categories" value="Culture">
+                                    <input type="checkbox" name="categorie" value="Culture">
                                     Culture
                                 </label>
                                 <label>
-                                    <input type="checkbox" name="categories" value="Gaming">
+                                    <input type="checkbox" name="categorie" value="Gaming">
                                     Gaming
                                 </label>
                             </div>
@@ -51,7 +51,7 @@
 
                     <div class="fileCreatePost">
                         <label for="file-upload"><b>Choose a file:</b></label>
-                        <input type="file" id="file" aria-label="File browser example">
+                        <input type="file" name="img" id="file" aria-label="File browser example">
                         <span class="file-custom"></span>
                     </div>
 
@@ -149,7 +149,8 @@
                 <img src="./static/images/posts/Itachi.jpg" class="postImage">
 
                 <div class="postRow">
-                    <div class="upDiv"> <img data-count="1403" class="shrink up" src="./static/images/thumbs-up.svg">
+                    <div class="upDiv"> <img data-count="1403" class="shrink up"
+                            src="./static/images/thumbs-up.svg">
                         <p>1403</p>
                     </div>
                     <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down-green.svg">

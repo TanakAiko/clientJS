@@ -63,10 +63,10 @@ export async function setHome() {
         profileName.textContent = app.user.nickname
 
         const createPostForm = document.getElementById('createPostForm')
-        createPostForm.addEventListener("submit", (event) => {
+        createPostForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            const checkboxes = createPostForm.querySelectorAll('input[name="categories"]:checked');
+            const checkboxes = createPostForm.querySelectorAll('input[name="categorie"]:checked');
             if (checkboxes.length === 0) {
                 categorieError.style.display = 'block';
                 return; // Empêcher la soumission du formulaire
@@ -77,11 +77,31 @@ export async function setHome() {
 
             const data = getDataForm(createPostForm)
 
-            console.log(data);
 
-            app.ws.send(JSON.stringify({ action: "postCreate", data: data }));
+            data.img = await processFile(data.img)
+
+            console.log(data);
+            app.ws.send(JSON.stringify({ action: "postCreate", data: JSON.stringify(data) }));
         })
 
+    }
+
+    function encodeImageFileAsURL(file) {
+        return new Promise((resolve, reject) => {
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                var base64data = reader.result;
+                resolve(base64data);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async function processFile(data) {
+        const base64data = await encodeImageFileAsURL(data);
+        console.log(base64data);
+        return base64data
     }
 
 
@@ -90,11 +110,11 @@ export async function setHome() {
         const data = Object.fromEntries(dataForm.entries());
 
         const checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
-        data.categories = Array.from(checkboxes).map(checkbox => checkbox.value);
+        data.categorie = Array.from(checkboxes).map(checkbox => checkbox.value);
 
         const fileInput = form.querySelector('input[type="file"]');
         if (fileInput.files.length > 0) {
-            data.file = fileInput.files[0];
+            data.img = fileInput.files[0];
         }
 
         return data;
@@ -170,7 +190,7 @@ export const homePage = `<div id="home">
                             <hr>
 
                             <label for="psw"><b>Description:</b></label>
-                            <input type="text" placeholder="Enter Description" name="description" id="psw" required>
+                            <input type="text" placeholder="Enter Description" name="content" id="psw" required>
 
 
                             <div class="categorieCreatePost">
@@ -178,31 +198,31 @@ export const homePage = `<div id="home">
                                     <legend>Choose categories</legend>
                                     <div class="createPostCheckboxContainer">
                                         <label>
-                                            <input type="checkbox" name="categories" value="Anime">
+                                            <input type="checkbox" name="categorie" value="Anime">
                                             Anime
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="categories" value="Manga">
+                                            <input type="checkbox" name="categorie" value="Manga">
                                             Manga
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="categories" value="Politique">
+                                            <input type="checkbox" name="categorie" value="Politique">
                                             Politique
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="categories" value="Sport">
+                                            <input type="checkbox" name="categorie" value="Sport">
                                             Sport
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="categories" value="Science">
+                                            <input type="checkbox" name="categorie" value="Science">
                                             Science
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="categories" value="Culture">
+                                            <input type="checkbox" name="categorie" value="Culture">
                                             Culture
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="categories" value="Gaming">
+                                            <input type="checkbox" name="categorie" value="Gaming">
                                             Gaming
                                         </label>
                                     </div>
@@ -213,7 +233,7 @@ export const homePage = `<div id="home">
 
                             <div class="fileCreatePost">
                                 <label for="file-upload"><b>Choose a file:</b></label>
-                                <input type="file" id="file" aria-label="File browser example">
+                                <input type="file" name="img" id="file" aria-label="File browser example">
                                 <span class="file-custom"></span>
                             </div>
 
