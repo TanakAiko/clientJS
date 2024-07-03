@@ -60,30 +60,14 @@ export async function setHome() {
 
     function initPage() {
         const profileName = document.getElementById('profileName')
+        console.log("appBefore: ", app);
+
         profileName.textContent = app.user.nickname
+        listenSubmitPost();
 
-        const createPostForm = document.getElementById('createPostForm')
-        createPostForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
+        console.log("appAfter: ", app);
 
-            const checkboxes = createPostForm.querySelectorAll('input[name="categorie"]:checked');
-            if (checkboxes.length === 0) {
-                categorieError.style.display = 'block';
-                return; // Empêcher la soumission du formulaire
-            } else {
-                categorieError.style.display = 'none';
-            }
-            closeModal()
-
-            const data = getDataForm(createPostForm)
-
-
-            data.img = await processFile(data.img)
-
-            console.log(data);
-            app.ws.send(JSON.stringify({ action: "postCreate", data: JSON.stringify(data) }));
-        })
-
+        app.ws.send(JSON.stringify({ action: "getAllPost"}));
     }
 
     function encodeImageFileAsURL(file) {
@@ -105,25 +89,48 @@ export async function setHome() {
     }
 
 
-    function getDataForm(form) {
-        const dataForm = new FormData(form);
-        const data = Object.fromEntries(dataForm.entries());
+    
 
-        const checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
-        data.categorie = Array.from(checkboxes).map(checkbox => checkbox.value);
+    async function listenSubmitPost() {
+        const createPostForm = document.getElementById('createPostForm')
+        createPostForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
 
-        const fileInput = form.querySelector('input[type="file"]');
-        if (fileInput.files.length > 0) {
-            data.img = fileInput.files[0];
-        }
+            const checkboxes = createPostForm.querySelectorAll('input[name="categorie"]:checked');
+            if (checkboxes.length === 0) {
+                categorieError.style.display = 'block';
+                return; // Empêcher la soumission du formulaire
+            } else {
+                categorieError.style.display = 'none';
+            }
+            closeModal()
 
-        return data;
+            const data = getDataForm(createPostForm)
+
+
+            data.img = await processFile(data.img)
+
+            console.log(data);
+            console.log("appCreatePost: ", app);
+            app.ws.send(JSON.stringify({ action: "postCreate", data: JSON.stringify(data) }));
+        })
     }
 
-    async function submitPost(event) {
+}
 
+function getDataForm(form) {
+    const dataForm = new FormData(form);
+    const data = Object.fromEntries(dataForm.entries());
+
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]:checked');
+    data.categorie = Array.from(checkboxes).map(checkbox => checkbox.value);
+
+    const fileInput = form.querySelector('input[type="file"]');
+    if (fileInput.files.length > 0) {
+        data.img = fileInput.files[0];
     }
 
+    return data;
 }
 
 function addListenerToLike(collection, action) {

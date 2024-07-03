@@ -20,6 +20,9 @@ export function onMessage(event) {
             console.log('Server replied (', msg.action, '): ', msg.data);
 
             break;
+        case 'getAllPost':
+            console.log('Server replied (', msg.action, '): ', msg.data);
+            break;
         default:
             console.log('Unknown action:', msg.action);
     }
