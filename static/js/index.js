@@ -13,11 +13,18 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.log("GetUserData (new) : ", userData);
                 app.user = userData
 
-                // await new Promise((resolve) => {
+                await new Promise((resolve, reject) => {
                     app.ws = new WebSocket(wsURL);
-                //     resolve();                   
-                // })
-                
+                    app.ws.onopen = () => {
+                        console.log("Connection is open...");
+                        resolve();
+                    }
+                    app.ws.onerror = (error) => {
+                        console.error('WebSocket error:', error);
+                        reject();
+                    }
+                })
+
                 setHomePage()
 
                 app.ws.onopen = onOpen

@@ -45,51 +45,16 @@ export async function setHome() {
     initPage();
 
 
-    function openNotifModal() {
-        modalNotif.style.display = "block";
-    }
-
-    function openCreatePostModal() {
-        modalCreatePost.style.display = 'block';
-    }
-
-    function closeModal() {
-        modalCreatePost.style.display = 'none';
-        modalNotif.style.display = 'none';
-    }
-
     function initPage() {
         const profileName = document.getElementById('profileName')
-        console.log("appBefore: ", app);
-
         profileName.textContent = app.user.nickname
+        
         listenSubmitPost();
 
-        console.log("appAfter: ", app);
+        app.ws.send(JSON.stringify({ action: "getAllPost" }));
 
-        app.ws.send(JSON.stringify({ action: "getAllPost"}));
+
     }
-
-    function encodeImageFileAsURL(file) {
-        return new Promise((resolve, reject) => {
-            var reader = new FileReader();
-            reader.onloadend = function () {
-                var base64data = reader.result;
-                resolve(base64data);
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    }
-
-    async function processFile(data) {
-        const base64data = await encodeImageFileAsURL(data);
-        console.log(base64data);
-        return base64data
-    }
-
-
-    
 
     async function listenSubmitPost() {
         const createPostForm = document.getElementById('createPostForm')
@@ -106,6 +71,7 @@ export async function setHome() {
             closeModal()
 
             const data = getDataForm(createPostForm)
+            data.nickname = app.user.nickname
 
 
             data.img = await processFile(data.img)
@@ -116,6 +82,37 @@ export async function setHome() {
         })
     }
 
+    function openNotifModal() {
+        modalNotif.style.display = "block";
+    }
+
+    function openCreatePostModal() {
+        modalCreatePost.style.display = 'block';
+    }
+
+    function closeModal() {
+        modalCreatePost.style.display = 'none';
+        modalNotif.style.display = 'none';
+    }
+
+}
+
+function encodeImageFileAsURL(file) {
+    return new Promise((resolve, reject) => {
+        var reader = new FileReader();
+        reader.onloadend = function () {
+            var base64data = reader.result;
+            resolve(base64data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+async function processFile(data) {
+    const base64data = await encodeImageFileAsURL(data);
+    console.log(base64data);
+    return base64data
 }
 
 function getDataForm(form) {

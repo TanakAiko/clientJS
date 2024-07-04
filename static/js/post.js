@@ -1,14 +1,15 @@
 export class Post {
-    constructor(id, userId, categorie, content, img, nbrLike, nbrDislike, createAt,nickName) {
+    constructor(id, userId, nickName, categorie, content, img, imgBase64, nbrLike, nbrDislike, createAt) {
         this.id = id
         this.userId = userId
+        this.nickName = nickName
         this.categorie = categorie
         this.content = content
         this.img = img
+        this.imgBase64 = imgBase64
         this.nbrLike = nbrLike
         this.nbrDislike = nbrDislike
         this.createAt = createAt
-        this.nickName = nickName
     }
 
     getHtml() {
@@ -21,7 +22,7 @@ export class Post {
                         </div>
                     </div>
 
-                    <div class="postCategories">Here are the categories</div>
+                    <div class="postCategories">${this.categorie}</div>
 
                     <p class="postText">${this.content}</p>
 
@@ -32,10 +33,10 @@ export class Post {
                                 src="./static/images/thumbs-up.svg">
                             <p>${this.nbrLike}</p>
                         </div>
-                        <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down-green.svg">
+                        <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down.svg">
                             <p>${this.nbrDislike}</p>
                         </div>
-                        <div> <img class="shrink" src="./static/images/comments-regular.svg">1315</div>
+                        <div> <img class="shrink" src="./static/images/comments-regular.svg">0</div>
                     </div>
                 </div>`
     }

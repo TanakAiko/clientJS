@@ -1,31 +1,59 @@
 import { setLoginRegisterPage } from "./setPage.js";
 import { getwayURL } from "./constants.js";
+import { Post } from "./post.js";
 
 export function onMessage(event) {
     const msg = JSON.parse(event.data);
     console.log('Message from server:', msg);
-
+    if (msg.data === "error") return
     switch (msg.action) {
         case 'reply':
             console.log('Server replied (', msg.action, '): ', msg.data);
             break;
         case 'logout':
             console.log('Server replied (', msg.action, '): ', msg.data);
-            if (msg.data !== "error") {
-                deleteCookie("sessionID")
-                setLoginRegisterPage()
-            }
+            deleteCookie("sessionID")
+            setLoginRegisterPage()
             break;
         case 'postCreate':
             console.log('Server replied (', msg.action, '): ', msg.data);
-
             break;
         case 'getAllPost':
             console.log('Server replied (', msg.action, '): ', msg.data);
+            updatePost(msg.data)
             break;
         default:
             console.log('Unknown action:', msg.action);
     }
+}
+
+async function updatePost(jsonData) {
+    const mainContainer = document.getElementsByClassName('main-content')[0]
+    var newContent = ""
+
+    const tabData = JSON.parse(jsonData)
+
+    const posts = tabData.map(item => new Post(
+        item.postID,
+        item.userID,
+        item.nickname,
+        item.categorie,
+        item.content,
+        item.img,
+        item.imgBase64,
+        item.nbrLike,
+        item.nbrDislike,
+        item.createAt
+    ));
+
+
+    for (const post of posts) {
+        decodeBase64(post.imgBase64, post.img)
+        newContent += post.getHtml()
+        mainContainer.innerHTML = newContent
+    }
+
+    console.log("\n\n The posts: ", posts);
 }
 
 export function onError(error) {
@@ -98,4 +126,24 @@ export async function getUserData(sessionId) {
     } catch (error) {
         console.error(`Error while sending data`, error);
     }
+}
+
+function decodeBase64(base64Image, outputFilePath) {
+    let decodedData = atob(base64Image);
+    fetch(decodedData)
+        .then(response => response.blob())
+        .then(blob => {
+            saveImageToDisk(blob, outputFilePath);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function saveImageToDisk(blob, path) {
+    const reader = new FileReader();
+    reader.onloadend = function () {
+        const arrayBuffer = this.result;
+        require('fs').writeFileSync(path, new Uint8Array(arrayBuffer), { encoding: 'binary' });
+        console.log('Image saved successfully.');
+    };
+    reader.readAsArrayBuffer(blob);
 }
