@@ -22,6 +22,10 @@ export function onMessage(event) {
             //console.log('Server replied (', msg.action, '): ', msg.data);
             updatePost(msg.data)
             break;
+
+        case 'updatePosts':
+            updatePost(msg.data)
+            break
         default:
             console.log('Unknown action:', msg.action);
     }
@@ -51,6 +55,12 @@ async function updatePost(jsonData) {
         newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`)
     }
     mainContainer.insertAdjacentHTML('afterbegin', newContent)
+
+    var postRow = document.getElementsByClassName('postRow');
+
+    addListenerToLike(postRow, 'click')
+
+    addListenerToDislike(postRow, 'click')
 
     console.log("\n\n The posts: ", posts);
 }
@@ -124,5 +134,60 @@ export async function getUserData(sessionId) {
         } else return 0
     } catch (error) {
         console.error(`Error while sending data`, error);
+    }
+}
+
+
+export function addListenerToLike(collection, action) {
+    for (let i = 0; i < collection.length; i++) {
+
+        const upDiv = collection[i].getElementsByClassName('upDiv')[0]
+        const downDiv = collection[i].getElementsByClassName('downDiv')[0]
+
+
+        const imgUp = upDiv.getElementsByTagName('img')[0]
+        const imgDown = downDiv.getElementsByTagName('img')[0]
+
+        const p = upDiv.getElementsByTagName('p')[0]
+        imgUp.addEventListener(action, (event) => {
+            if (imgUp.src.includes("thumbs-up.svg")) {
+
+                if (imgDown.src.includes("thumbs-down.svg")) {
+                    imgUp.src = "./static/images/thumbs-up-green.svg";
+                    const count = parseInt(upDiv.textContent.trim()) || 0;
+                    p.textContent = count + 1;
+                }
+
+            } else {
+                imgUp.src = "./static/images/thumbs-up.svg";
+                const count = parseInt(upDiv.textContent.trim()) || 0;
+                p.textContent = count - 1;
+            }
+        });
+
+    }
+}
+
+export function addListenerToDislike(collection, action) {
+    for (let i = 0; i < collection.length; i++) {
+        const divUp = collection[i].getElementsByClassName('upDiv')[0];
+        const divDown = collection[i].getElementsByClassName('downDiv')[0];
+        const imgUp = divUp.getElementsByTagName('img')[0];
+        const imgDown = divDown.getElementsByTagName('img')[0];
+        const p = divDown.getElementsByTagName('p')[0];
+        imgDown.addEventListener(action, (event) => {
+            if (imgDown.src.includes("thumbs-down.svg")) {
+                if (imgUp.src.includes("thumbs-up.svg")) {
+                    imgDown.src = "./static/images/thumbs-down-green.svg";
+                    const count = parseInt(divDown.textContent.trim()) || 0;
+                    p.textContent = count + 1;
+                }
+            } else {
+                imgDown.src = "./static/images/thumbs-down.svg";
+                const count = parseInt(divDown.textContent.trim()) || 0;
+                p.textContent = count - 1;
+            }
+        });
+
     }
 }
