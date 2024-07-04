@@ -12,7 +12,7 @@ export class Post {
         this.createAt = createAt
     }
 
-    getHtml() {
+    getHtml(src) {
         return `<div class="post-container">
                     <div class="user-prfile">
                         <img src="./static/images/user-alt.svg">
@@ -26,7 +26,7 @@ export class Post {
 
                     <p class="postText">${this.content}</p>
 
-                    <img src="${this.img}" class="postImage">
+                    <img src="${src}" class="postImage">
 
                     <div class="postRow">
                         <div class="upDiv"> <img class="shrink up"

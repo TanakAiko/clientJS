@@ -19,7 +19,7 @@ export function onMessage(event) {
             console.log('Server replied (', msg.action, '): ', msg.data);
             break;
         case 'getAllPost':
-            console.log('Server replied (', msg.action, '): ', msg.data);
+            //console.log('Server replied (', msg.action, '): ', msg.data);
             updatePost(msg.data)
             break;
         default:
@@ -48,10 +48,9 @@ async function updatePost(jsonData) {
 
 
     for (const post of posts) {
-        decodeBase64(post.imgBase64, post.img)
-        newContent += post.getHtml()
-        mainContainer.innerHTML = newContent
+        newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`)
     }
+    mainContainer.insertAdjacentHTML('afterbegin', newContent)
 
     console.log("\n\n The posts: ", posts);
 }
@@ -126,24 +125,4 @@ export async function getUserData(sessionId) {
     } catch (error) {
         console.error(`Error while sending data`, error);
     }
-}
-
-function decodeBase64(base64Image, outputFilePath) {
-    let decodedData = atob(base64Image);
-    fetch(decodedData)
-        .then(response => response.blob())
-        .then(blob => {
-            saveImageToDisk(blob, outputFilePath);
-        })
-        .catch(error => console.error('Error:', error));
-}
-
-function saveImageToDisk(blob, path) {
-    const reader = new FileReader();
-    reader.onloadend = function () {
-        const arrayBuffer = this.result;
-        require('fs').writeFileSync(path, new Uint8Array(arrayBuffer), { encoding: 'binary' });
-        console.log('Image saved successfully.');
-    };
-    reader.readAsArrayBuffer(blob);
 }
