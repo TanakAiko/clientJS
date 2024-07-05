@@ -13,7 +13,7 @@ export class Post {
     }
 
     getHtml(src) {
-        return `<div class="post-container">
+        return `<div class="post-container" id="${this.id}">
                     <div class="user-prfile">
                         <img src="./static/images/user-alt.svg">
                         <div>

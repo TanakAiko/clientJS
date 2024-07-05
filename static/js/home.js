@@ -1,5 +1,5 @@
 import { app } from "./constants.js";
-import { getCookieValue, addListenerToLike, addListenerToDislike } from "./tools.js";
+import { getCookieValue} from "./tools.js";
 
 export async function setHome() {
     const modalCreatePost = document.getElementById('createPostModal');
@@ -128,6 +128,88 @@ function getDataForm(form) {
     }
 
     return data;
+}
+
+function updateLike(idPost, nbrLike, nbrDislike) {
+    const data = {
+        postID: idPost,
+        nbrLike: nbrLike,
+        nbrDislike: nbrDislike
+    }
+    app.ws.send(JSON.stringify({ action: "updateLike", data: JSON.stringify(data) }));
+}
+
+export function addListenerToLike(collection, action) {
+    for (let i = 0; i < collection.length; i++) {
+
+        const idPost = parseInt(collection[i].id) || 0
+        const upDiv = collection[i].getElementsByClassName('upDiv')[0]
+        const downDiv = collection[i].getElementsByClassName('downDiv')[0]
+
+
+        const imgUp = upDiv.getElementsByTagName('img')[0]
+        const imgDown = downDiv.getElementsByTagName('img')[0]
+
+        const p = upDiv.getElementsByTagName('p')[0]
+        imgUp.addEventListener(action, (event) => {
+            if (imgUp.src.includes("thumbs-up.svg")) {
+
+                if (imgDown.src.includes("thumbs-down.svg")) {
+                    imgUp.src = "./static/images/thumbs-up-green.svg";
+                    const countLike = parseInt(upDiv.textContent.trim()) || 0;
+                    p.textContent = countLike + 1;
+
+                    const countDislike = parseInt(downDiv.textContent.trim()) || 0;
+
+                    updateLike(idPost, countLike + 1, countDislike)
+                }
+
+            } else {
+                imgUp.src = "./static/images/thumbs-up.svg";
+                const countLike = parseInt(upDiv.textContent.trim()) || 0;
+                p.textContent = countLike - 1;
+
+                const countDislike = parseInt(downDiv.textContent.trim()) || 0;
+
+                updateLike(idPost, countLike - 1, countDislike)
+            }
+        });
+
+    }
+}
+
+export function addListenerToDislike(collection, action) {
+    for (let i = 0; i < collection.length; i++) {
+        
+        const idPost = parseInt(collection[i].id) || 0
+        const divUp = collection[i].getElementsByClassName('upDiv')[0];
+        const divDown = collection[i].getElementsByClassName('downDiv')[0];
+        const imgUp = divUp.getElementsByTagName('img')[0];
+        const imgDown = divDown.getElementsByTagName('img')[0];
+        const p = divDown.getElementsByTagName('p')[0];
+        imgDown.addEventListener(action, (event) => {
+            if (imgDown.src.includes("thumbs-down.svg")) {
+                if (imgUp.src.includes("thumbs-up.svg")) {
+                    imgDown.src = "./static/images/thumbs-down-green.svg";
+                    const countDislike = parseInt(divDown.textContent.trim()) || 0;
+                    p.textContent = countDislike + 1;
+
+                    const countLike = parseInt(divUp.textContent.trim()) || 0;
+
+                    updateLike(idPost, countLike, countDislike + 1)
+                }
+            } else {
+                imgDown.src = "./static/images/thumbs-down.svg";
+                const countDislike = parseInt(divDown.textContent.trim()) || 0;
+                p.textContent = countDislike - 1;
+
+                const countLike = parseInt(divUp.textContent.trim()) || 0;
+
+                updateLike(idPost, countLike, countDislike - 1)
+            }
+        });
+
+    }
 }
 
 export const homePage = `<div id="home">
@@ -261,122 +343,7 @@ export const homePage = `<div id="home">
                 </div>
 
 
-                <div class="main-content">
-
-                    <!-- ***************************************************************** -->
-
-                    <div class="post-container">
-                        <div class="user-prfile">
-                            <img src="./static/images/user-alt.svg">
-                            <div>
-                                <p>Uchiwa Itachi</p>
-                                <span>November 09 2025, 10:09 am</span>
-                            </div>
-                        </div>
-
-                        <div class="postCategories">Here are the categories</div>
-
-                        <p class="postText">Red moon, run</p>
-
-                        <img src="./static/images/posts/Itachi.jpg" class="postImage">
-
-                        <div class="postRow">
-                            <div class="upDiv"> <img data-count="1403" class="shrink up"
-                                    src="./static/images/thumbs-up.svg">
-                                <p>1403</p>
-                            </div>
-                            <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down-green.svg">
-                                <p>102</p>
-                            </div>
-                            <div> <img class="shrink" src="./static/images/comments-regular.svg">1315</div>
-                        </div>
-                    </div>
-
-                    <!-- ***************************************************************** -->
-
-                    <div class="post-container">
-                        <div class="user-prfile">
-                            <img src="./static/images/user-alt.svg">
-                            <div>
-                                <p>JELEE</p>
-                                <span>October 29 2025, 6:53 am</span>
-                            </div>
-                        </div>
-
-                        <div class="postCategories">Here are the categories</div>
-
-                        <p class="postText">Who is this bg !!!</p>
-
-                        <img src="./static/images/posts/JELEE.png" class="postImage">
-
-                        <div class="postRow">
-                            <div class="upDiv"><img class="shrink up" src="./static/images/thumbs-up-green.svg">
-                                <p>925</p>
-                            </div>
-                            <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down.svg">
-                                <p>456</p>
-                            </div>
-                            <div> <img class="shrink" src="./static/images/comments-regular.svg"> 355</div>
-                        </div>
-                    </div>
-
-                    <!-- ***************************************************************** -->
-
-                    <div class="post-container">
-                        <div class="user-prfile">
-                            <img src="./static/images/user-alt.svg">
-                            <div>
-                                <p>Tanaka Aiko</p>
-                                <span>June 18 2025, 6:03 pm</span>
-                            </div>
-                        </div>
-
-                        <div class="postCategories">Here are the categories</div>
-
-                        <p class="postText">I'm good, it seems.</p>
-
-                        <img src="./static/images/posts/TanakAiko.jpeg" class="postImage">
-
-                        <div class="postRow">
-                            <div class="upDiv"> <img class="shrink up" src="./static/images/thumbs-up-green.svg">
-                                <p>121</p>
-                            </div>
-                            <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down.svg">
-                                <p>32</p>
-                            </div>
-                            <div> <img class="shrink" src="./static/images/comments-regular.svg"> 39</div>
-                        </div>
-                    </div>
-
-                    <!-- ***************************************************************** -->
-
-                    <div class="post-container">
-                        <div class="user-prfile">
-                            <img src="./static/images/user-alt.svg">
-                            <div>
-                                <p>Amiya</p>
-                                <span>February 21 2025, 12:40 pm</span>
-                            </div>
-                        </div>
-
-                        <div class="postCategories">Here are the categories</div>
-
-                        <p class="postText">I'm sorry. I would save this city.</p>
-
-                        <img src="./static/images/posts/Amiya.jpg" class="postImage">
-
-                        <div class="postRow">
-                            <div class="upDiv"> <img class="shrink up" src="./static/images/thumbs-up.svg">
-                                <p>21</p>
-                            </div>
-                            <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down.svg">
-                                <p>0</p>
-                            </div>
-                            <div> <img class="shrink" src="./static/images/comments-regular.svg"> 2</div>
-                        </div>
-                    </div>
-
-                </div>
+                <div class="main-content"></div>
 
 
                 <div class="right-sidebar">

@@ -1,17 +1,17 @@
 import { setLoginRegisterPage } from "./setPage.js";
 import { getwayURL } from "./constants.js";
 import { Post } from "./post.js";
+import { addListenerToDislike, addListenerToLike } from "./home.js";
 
 export function onMessage(event) {
     const msg = JSON.parse(event.data);
-    console.log('Message from server:', msg);
-    if (msg.data === "error") return
     switch (msg.action) {
         case 'reply':
             console.log('Server replied (', msg.action, '): ', msg.data);
             break;
         case 'logout':
             console.log('Server replied (', msg.action, '): ', msg.data);
+            if (msg.data === "error") return
             deleteCookie("sessionID")
             setLoginRegisterPage()
             break;
@@ -19,20 +19,56 @@ export function onMessage(event) {
             console.log('Server replied (', msg.action, '): ', msg.data);
             break;
         case 'getAllPost':
-            //console.log('Server replied (', msg.action, '): ', msg.data);
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
             updatePost(msg.data)
             break;
 
         case 'updatePosts':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
             updatePost(msg.data)
             break
+
+        case 'updateLike':
+            console.log('Server replied (', msg.action, '): ', msg.data);
+            break;
+
+        case 'sendNewLikes':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            sendNewLikes(msg.data)
+            break
+
         default:
             console.log('Unknown action:', msg.action);
     }
 }
 
+function sendNewLikes(data) {
+    const postData = JSON.parse(data)
+    const post = document.getElementById(postData.postID)
+
+    const upDiv = post.getElementsByClassName('upDiv')[0]
+    const downDiv = post.getElementsByClassName('downDiv')[0]
+
+    const upP = upDiv.getElementsByTagName('p')[0]
+    const downP = downDiv.getElementsByTagName('p')[0]
+
+    upP.textContent = post.nbrLike
+    downP.textContent = post.nbrDislike
+}
+
 async function updatePost(jsonData) {
     const mainContainer = document.getElementsByClassName('main-content')[0]
+    const childNbr = mainContainer.childElementCount
+    console.log("childNbr", childNbr);
     var newContent = ""
 
     const tabData = JSON.parse(jsonData)
@@ -134,60 +170,5 @@ export async function getUserData(sessionId) {
         } else return 0
     } catch (error) {
         console.error(`Error while sending data`, error);
-    }
-}
-
-
-export function addListenerToLike(collection, action) {
-    for (let i = 0; i < collection.length; i++) {
-
-        const upDiv = collection[i].getElementsByClassName('upDiv')[0]
-        const downDiv = collection[i].getElementsByClassName('downDiv')[0]
-
-
-        const imgUp = upDiv.getElementsByTagName('img')[0]
-        const imgDown = downDiv.getElementsByTagName('img')[0]
-
-        const p = upDiv.getElementsByTagName('p')[0]
-        imgUp.addEventListener(action, (event) => {
-            if (imgUp.src.includes("thumbs-up.svg")) {
-
-                if (imgDown.src.includes("thumbs-down.svg")) {
-                    imgUp.src = "./static/images/thumbs-up-green.svg";
-                    const count = parseInt(upDiv.textContent.trim()) || 0;
-                    p.textContent = count + 1;
-                }
-
-            } else {
-                imgUp.src = "./static/images/thumbs-up.svg";
-                const count = parseInt(upDiv.textContent.trim()) || 0;
-                p.textContent = count - 1;
-            }
-        });
-
-    }
-}
-
-export function addListenerToDislike(collection, action) {
-    for (let i = 0; i < collection.length; i++) {
-        const divUp = collection[i].getElementsByClassName('upDiv')[0];
-        const divDown = collection[i].getElementsByClassName('downDiv')[0];
-        const imgUp = divUp.getElementsByTagName('img')[0];
-        const imgDown = divDown.getElementsByTagName('img')[0];
-        const p = divDown.getElementsByTagName('p')[0];
-        imgDown.addEventListener(action, (event) => {
-            if (imgDown.src.includes("thumbs-down.svg")) {
-                if (imgUp.src.includes("thumbs-up.svg")) {
-                    imgDown.src = "./static/images/thumbs-down-green.svg";
-                    const count = parseInt(divDown.textContent.trim()) || 0;
-                    p.textContent = count + 1;
-                }
-            } else {
-                imgDown.src = "./static/images/thumbs-down.svg";
-                const count = parseInt(divDown.textContent.trim()) || 0;
-                p.textContent = count - 1;
-            }
-        });
-
     }
 }

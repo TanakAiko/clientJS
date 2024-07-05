@@ -277,6 +277,7 @@ a:hover {
 
 .main-content {
   flex-basis: 50%;
+  width: 100%;
 }
 
 li {
