@@ -1,9 +1,11 @@
 export class Post {
-    constructor(id, userId, nickName, categorie, content, img, imgBase64, nbrLike, nbrDislike, createAt) {
+    constructor(id, userId, nickName, categorie, likedBy, dislikedBy, content, img, imgBase64, nbrLike, nbrDislike, createAt) {
         this.id = id
         this.userId = userId
         this.nickName = nickName
         this.categorie = categorie
+        this.likedBy = likedBy
+        this.dislikedBy = dislikedBy
         this.content = content
         this.img = img
         this.imgBase64 = imgBase64
@@ -28,7 +30,7 @@ export class Post {
 
                     <img src="${src}" class="postImage">
 
-                    <div class="postRow" data-id="${this.id}">
+                    <div class="postRow" data-id="${this.id}" data-likedBy="${this.likedBy} data-dislikedBy="${this.dislikedBy}">
                         <div class="upDiv"> <img class="shrink up"
                                 src="./static/images/thumbs-up.svg">
                             <p>${this.nbrLike}</p>

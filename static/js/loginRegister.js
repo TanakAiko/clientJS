@@ -25,7 +25,6 @@ export async function setLoginRegister() {
                 throw new Error(`HTTP error status: ${response.status}`);
             }
             const result = await response.json()
-            console.log(result);
         } catch (error) {
             console.error(`Error while sending data`, error);
         }
@@ -54,7 +53,6 @@ export async function setLoginRegister() {
                 throw new Error(`HTTP error status: ${response.status}`);
             } else loginError.style.display = 'none'
             const result = await response.json()
-            console.log(result);
             app.user = result
 
             await new Promise((resolve, reject) => {

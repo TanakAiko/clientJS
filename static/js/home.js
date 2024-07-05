@@ -1,5 +1,5 @@
 import { app } from "./constants.js";
-import { getCookieValue} from "./tools.js";
+import { getCookieValue } from "./tools.js";
 
 export async function setHome() {
     const modalCreatePost = document.getElementById('createPostModal');
@@ -48,7 +48,7 @@ export async function setHome() {
     function initPage() {
         const profileName = document.getElementById('profileName')
         profileName.textContent = app.user.nickname
-        
+
         listenSubmitPost();
 
         app.ws.send(JSON.stringify({ action: "getAllPost" }));
@@ -75,8 +75,6 @@ export async function setHome() {
 
             data.img = await processFile(data.img)
 
-            console.log(data);
-            console.log("appCreatePost: ", app);
             app.ws.send(JSON.stringify({ action: "postCreate", data: JSON.stringify(data) }));
         })
     }
@@ -110,7 +108,6 @@ function encodeImageFileAsURL(file) {
 
 async function processFile(data) {
     const base64data = await encodeImageFileAsURL(data);
-    console.log(base64data);
     return base64data
 }
 
@@ -129,14 +126,15 @@ function getDataForm(form) {
     return data;
 }
 
-function updateLike(idPost, nbrLike, nbrDislike) {
+function updateLike(idPost, nbrLike, nbrDislike, likedByArray, dislikedByArray) {
     const data = {
         postID: idPost,
         nbrLike: nbrLike,
-        nbrDislike: nbrDislike
+        nbrDislike: nbrDislike,
+        likedBy: likedByArray,
+        dislikedBy: dislikedByArray
     }
 
-    console.log("dataToSendLike: ", data);
     app.ws.send(JSON.stringify({ action: "updateLike", data: JSON.stringify(data) }));
 }
 
@@ -144,7 +142,7 @@ export function addListenerToLike(collection, action) {
     for (let i = 0; i < collection.length; i++) {
 
         const idPost = parseInt(collection[i].getAttribute('data-id'))
-        
+
         const upDiv = collection[i].getElementsByClassName('upDiv')[0]
         const downDiv = collection[i].getElementsByClassName('downDiv')[0]
 
@@ -154,26 +152,40 @@ export function addListenerToLike(collection, action) {
 
         const p = upDiv.getElementsByTagName('p')[0]
         imgUp.addEventListener(action, (event) => {
+
+            const likedByString = collection[i].getAttribute('data-likedBy')
+            const likedByArray = likedByString.split(',').map(name => name.trim());
+
+            const dislikedByString = collection[i].getAttribute('data-dislikedBy')
+            const dislikedByArray = dislikedByString.split(',').map(name => name.trim());
+
             if (imgUp.src.includes("thumbs-up.svg")) {
 
                 if (imgDown.src.includes("thumbs-down.svg")) {
+
+                    likedByArray.push(app.user.nickname)
+
                     imgUp.src = "./static/images/thumbs-up-green.svg";
+
                     const countLike = parseInt(upDiv.textContent.trim()) || 0;
                     p.textContent = countLike + 1;
 
                     const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
-                    updateLike(idPost, countLike + 1, countDislike)
+                    updateLike(idPost, countLike + 1, countDislike, likedByArray, dislikedByArray)
                 }
 
             } else {
+
+                likedByArray = likedByArray.filter(name => name !== app.user.nickname);
+
                 imgUp.src = "./static/images/thumbs-up.svg";
                 const countLike = parseInt(upDiv.textContent.trim()) || 0;
                 p.textContent = countLike - 1;
 
                 const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
-                updateLike(idPost, countLike - 1, countDislike)
+                updateLike(idPost, countLike - 1, countDislike, likedByArray, dislikedByArray)
             }
         });
 
@@ -182,7 +194,7 @@ export function addListenerToLike(collection, action) {
 
 export function addListenerToDislike(collection, action) {
     for (let i = 0; i < collection.length; i++) {
-        
+
         const idPost = parseInt(collection[i].getAttribute('data-id'))
 
         const divUp = collection[i].getElementsByClassName('upDiv')[0];
@@ -191,24 +203,36 @@ export function addListenerToDislike(collection, action) {
         const imgDown = divDown.getElementsByTagName('img')[0];
         const p = divDown.getElementsByTagName('p')[0];
         imgDown.addEventListener(action, (event) => {
+
+            const dislikedByString = collection[i].getAttribute('data-dislikedBy')
+            const dislikedByArray = dislikedByString.split(',').map(name => name.trim());
+
+            const likedByString = collection[i].getAttribute('data-likedBy')
+            const likedByArray = likedByString.split(',').map(name => name.trim());
+
             if (imgDown.src.includes("thumbs-down.svg")) {
                 if (imgUp.src.includes("thumbs-up.svg")) {
+
+                    dislikedByArray.push(app.user.nickname)
+
                     imgDown.src = "./static/images/thumbs-down-green.svg";
                     const countDislike = parseInt(divDown.textContent.trim()) || 0;
                     p.textContent = countDislike + 1;
 
                     const countLike = parseInt(divUp.textContent.trim()) || 0;
 
-                    updateLike(idPost, countLike, countDislike + 1)
+                    updateLike(idPost, countLike, countDislike + 1, likedByArray, dislikedByArray)
                 }
             } else {
+                dislikedByArray = dislikedByArray.filter(name => name !== app.user.nickname);
+
                 imgDown.src = "./static/images/thumbs-down.svg";
                 const countDislike = parseInt(divDown.textContent.trim()) || 0;
                 p.textContent = countDislike - 1;
 
                 const countLike = parseInt(divUp.textContent.trim()) || 0;
 
-                updateLike(idPost, countLike, countDislike - 1)
+                updateLike(idPost, countLike, countDislike - 1, likedByArray, dislikedByArray)
             }
         });
 

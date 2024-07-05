@@ -60,14 +60,12 @@ function sendNewLikes(data) {
     const upP = upDiv.getElementsByTagName('p')[0];
     const downP = downDiv.getElementsByTagName('p')[0];
 
-    upP.textContent = post.nbrLike
-    downP.textContent = post.nbrDislike
+    upP.textContent = postData.nbrLike
+    downP.textContent = postData.nbrDislike
 }
 
 async function updatePost(jsonData) {
     const mainContainer = document.getElementsByClassName('main-content')[0]
-    const childNbr = mainContainer.childElementCount
-    console.log("childNbr", childNbr);
     var newContent = ""
 
     const tabData = JSON.parse(jsonData)
@@ -96,8 +94,6 @@ async function updatePost(jsonData) {
     addListenerToLike(postRow, 'click')
 
     addListenerToDislike(postRow, 'click')
-
-    console.log("\n\n The posts: ", posts);
 }
 
 export function onError(error) {
