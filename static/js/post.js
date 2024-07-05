@@ -28,7 +28,7 @@ export class Post {
 
                     <img src="${src}" class="postImage">
 
-                    <div class="postRow">
+                    <div class="postRow" data-id="${this.id}">
                         <div class="upDiv"> <img class="shrink up"
                                 src="./static/images/thumbs-up.svg">
                             <p>${this.nbrLike}</p>

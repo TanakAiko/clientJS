@@ -73,7 +73,6 @@ export async function setHome() {
             const data = getDataForm(createPostForm)
             data.nickname = app.user.nickname
 
-
             data.img = await processFile(data.img)
 
             console.log(data);
@@ -136,13 +135,16 @@ function updateLike(idPost, nbrLike, nbrDislike) {
         nbrLike: nbrLike,
         nbrDislike: nbrDislike
     }
+
+    console.log("dataToSendLike: ", data);
     app.ws.send(JSON.stringify({ action: "updateLike", data: JSON.stringify(data) }));
 }
 
 export function addListenerToLike(collection, action) {
     for (let i = 0; i < collection.length; i++) {
 
-        const idPost = parseInt(collection[i].id) || 0
+        const idPost = parseInt(collection[i].getAttribute('data-id'))
+        
         const upDiv = collection[i].getElementsByClassName('upDiv')[0]
         const downDiv = collection[i].getElementsByClassName('downDiv')[0]
 
@@ -181,7 +183,8 @@ export function addListenerToLike(collection, action) {
 export function addListenerToDislike(collection, action) {
     for (let i = 0; i < collection.length; i++) {
         
-        const idPost = parseInt(collection[i].id) || 0
+        const idPost = parseInt(collection[i].getAttribute('data-id'))
+
         const divUp = collection[i].getElementsByClassName('upDiv')[0];
         const divDown = collection[i].getElementsByClassName('downDiv')[0];
         const imgUp = divUp.getElementsByTagName('img')[0];

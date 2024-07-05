@@ -56,9 +56,20 @@ export async function setLoginRegister() {
             const result = await response.json()
             console.log(result);
             app.user = result
-            setHomePage()
+
+            await new Promise((resolve, reject) => {
+                app.ws = new WebSocket(wsURL);
+                app.ws.onopen = () => {
+                    console.log("Connection is open...");
+                    resolve();
+                }
+                app.ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    reject();
+                }
+            })
             
-            app.ws = new WebSocket(wsURL);
+            setHomePage()
 
             app.ws.onopen = onOpen
 

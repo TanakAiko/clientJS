@@ -16,8 +16,10 @@ export function onMessage(event) {
             setLoginRegisterPage()
             break;
         case 'postCreate':
-            console.log('Server replied (', msg.action, '): ', msg.data);
-            break;
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }            break;
         case 'getAllPost':
             if (msg.data === "error") {
                 console.log('Server replied (', msg.action, '): ', msg.data);
@@ -39,10 +41,7 @@ export function onMessage(event) {
             break;
 
         case 'sendNewLikes':
-            if (msg.data === "error") {
-                console.log('Server replied (', msg.action, '): ', msg.data);
-                return
-            }
+            console.log('Server replied (', msg.action, '): ', msg.data);
             sendNewLikes(msg.data)
             break
 
@@ -53,13 +52,13 @@ export function onMessage(event) {
 
 function sendNewLikes(data) {
     const postData = JSON.parse(data)
-    const post = document.getElementById(postData.postID)
+    const post = document.getElementById(postData.postID).getElementsByClassName('postRow')[0]
 
-    const upDiv = post.getElementsByClassName('upDiv')[0]
-    const downDiv = post.getElementsByClassName('downDiv')[0]
+    const upDiv = post.getElementsByClassName('upDiv')[0];
+    const downDiv = post.getElementsByClassName('downDiv')[0];
 
-    const upP = upDiv.getElementsByTagName('p')[0]
-    const downP = downDiv.getElementsByTagName('p')[0]
+    const upP = upDiv.getElementsByTagName('p')[0];
+    const downP = downDiv.getElementsByTagName('p')[0];
 
     upP.textContent = post.nbrLike
     downP.textContent = post.nbrDislike
