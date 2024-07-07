@@ -46,7 +46,10 @@ body {
   background-color: var(--light-grey);
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 0 40px var(--dark-green);
+
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 3%;
 
   width: fit-content;
   height: fit-content;
@@ -229,12 +232,6 @@ a:hover {
   border-radius: 6px;
   padding: 5px;
   color: var(--black);
-}
-
-.container {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 3%;
 }
 
 #profile {

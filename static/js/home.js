@@ -154,10 +154,10 @@ export function addListenerToLike(collection, action) {
         imgUp.addEventListener(action, (event) => {
 
             var likedByString = collection[i].getAttribute('data-likedBy')
-            var likedByArray = likedByString.split(',').map(name => name.trim()).slice(1);
+            var likedByArray = likedByString.split(',').map(name => name.trim());
 
             var dislikedByString = collection[i].getAttribute('data-dislikedBy')
-            var dislikedByArray = dislikedByString.split(',').map(name => name.trim()).slice(1);
+            var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
 
             if (imgUp.src.includes("thumbs-up.svg")) {
 
@@ -205,10 +205,10 @@ export function addListenerToDislike(collection, action) {
         imgDown.addEventListener(action, (event) => {
 
             var dislikedByString = collection[i].getAttribute('data-dislikedBy')
-            var dislikedByArray = dislikedByString.split(',').map(name => name.trim()).slice(1);
+            var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
 
             var likedByString = collection[i].getAttribute('data-likedBy')
-            var likedByArray = likedByString.split(',').map(name => name.trim()).slice(1);
+            var likedByArray = likedByString.split(',').map(name => name.trim());
 
             if (imgDown.src.includes("thumbs-down.svg")) {
                 if (imgUp.src.includes("thumbs-up.svg")) {

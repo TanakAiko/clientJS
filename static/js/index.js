@@ -36,6 +36,5 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     } else {
         setLoginRegisterPage()
-        console.log("no cookie named 'sessionID'");
     }
 })

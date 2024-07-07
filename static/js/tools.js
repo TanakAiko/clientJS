@@ -53,8 +53,6 @@ export function onMessage(event) {
 function sendNewLikes(data) {
     const postData = JSON.parse(data)
 
-    console.log("sendNewLikes received data: ", postData);
-
     const post = document.getElementById(postData.postID).getElementsByClassName('postRow')[0]
 
     const upDiv = post.getElementsByClassName('upDiv')[0];
@@ -67,7 +65,7 @@ function sendNewLikes(data) {
     post.setAttribute('data-likedBy', newLikedByString);
 
     var newDislikedByString = postData.dislikedBy.join(', ');
-    post.setAttribute('data-likedBy', newDislikedByString);
+    post.setAttribute('data-dislikedBy', newDislikedByString);
 
     upP.textContent = postData.nbrLike
     downP.textContent = postData.nbrDislike
@@ -124,12 +122,16 @@ function initThumbs(collection, userNickname) {
         var likedByArray = likedByString.split(',').map(name => name.trim());
         if (likedByArray.includes(userNickname)) {
             imgUp.src = "./static/images/thumbs-up-green.svg";
+        } else {
+            imgUp.src = "./static/images/thumbs-up.svg";
         }
 
         var dislikedByString = collection[i].getAttribute('data-dislikedBy')
         var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
         if (dislikedByArray.includes(userNickname)) {
             imgDown.src = "./static/images/thumbs-down-green.svg";
+        } else {
+            imgDown.src = "./static/images/thumbs-down.svg";
         }
     }
 }

@@ -24,9 +24,8 @@ export async function setLoginRegister() {
             if (!response.ok) {
                 throw new Error(`HTTP error status: ${response.status}`);
             }
-            const result = await response.json()
         } catch (error) {
-            console.error(`Error while sending data`, error);
+            console.error(`Error while register: `, error);
         }
 
         toggleForms()
@@ -78,7 +77,7 @@ export async function setLoginRegister() {
             app.ws.onclose = onClose
 
         } catch (error) {
-            console.error(error);
+            console.error(`Error while login: `, error);
         }
     })
 
