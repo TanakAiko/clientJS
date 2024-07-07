@@ -4,8 +4,10 @@ import { wsURL, app } from "./constants.js";
 
 document.addEventListener("DOMContentLoaded", async function () {
     const sessionId = getCookieValue("sessionID")
+    console.log("sessionId: ", sessionId);
     if (sessionId) {
         const response = await testSession(sessionId)
+        console.log("response (testSession): ", response);
         if (response !== 0) {
             const userData = await getUserData(sessionId)
             if (userData !== 0) {
@@ -35,6 +37,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         }
     } else {
+        console.log("Here to set setLoginRegisterPage");
         setLoginRegisterPage()
     }
 })

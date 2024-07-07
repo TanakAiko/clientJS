@@ -169,10 +169,11 @@ export async function testSession(sessionId) {
             credentials: 'include',
         };
         const response = await fetch(urlAuthorized, requestOptions)
+        console.log("response.status: ", response.status)
 
-        if (!response.ok) {
+        /* if (!response.ok) {
             throw new Error(`HTTP error status: ${response.status}`);
-        }
+        } */
 
         if (response.status === 202) {
             const resp = await response.json()
