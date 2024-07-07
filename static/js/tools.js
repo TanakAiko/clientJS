@@ -1,5 +1,5 @@
 import { setLoginRegisterPage } from "./setPage.js";
-import { getwayURL } from "./constants.js";
+import { app, getwayURL } from "./constants.js";
 import { Post } from "./post.js";
 import { addListenerToDislike, addListenerToLike } from "./home.js";
 
@@ -19,7 +19,7 @@ export function onMessage(event) {
             if (msg.data === "error") {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
-            }            break;
+            } break;
         case 'getAllPost':
             if (msg.data === "error") {
                 console.log('Server replied (', msg.action, '): ', msg.data);
@@ -52,6 +52,9 @@ export function onMessage(event) {
 
 function sendNewLikes(data) {
     const postData = JSON.parse(data)
+
+    console.log("sendNewLikes received data: ", postData);
+
     const post = document.getElementById(postData.postID).getElementsByClassName('postRow')[0]
 
     const upDiv = post.getElementsByClassName('upDiv')[0];
@@ -59,6 +62,12 @@ function sendNewLikes(data) {
 
     const upP = upDiv.getElementsByTagName('p')[0];
     const downP = downDiv.getElementsByTagName('p')[0];
+
+    var newLikedByString = postData.likedBy.join(', ');
+    post.setAttribute('data-likedBy', newLikedByString);
+
+    var newDislikedByString = postData.dislikedBy.join(', ');
+    post.setAttribute('data-likedBy', newDislikedByString);
 
     upP.textContent = postData.nbrLike
     downP.textContent = postData.nbrDislike
@@ -75,6 +84,8 @@ async function updatePost(jsonData) {
         item.userID,
         item.nickname,
         item.categorie,
+        item.likedBy,
+        item.dislikedBy,
         item.content,
         item.img,
         item.imgBase64,
@@ -91,9 +102,36 @@ async function updatePost(jsonData) {
 
     var postRow = document.getElementsByClassName('postRow');
 
+    console.log("app.user.nickname: ", app.user.nickname);
+
+    initThumbs(postRow, app.user.nickname)
+
     addListenerToLike(postRow, 'click')
 
     addListenerToDislike(postRow, 'click')
+}
+
+function initThumbs(collection, userNickname) {
+    for (let i = 0; i < collection.length; i++) {
+        const upDiv = collection[i].getElementsByClassName('upDiv')[0]
+        const downDiv = collection[i].getElementsByClassName('downDiv')[0]
+
+
+        const imgUp = upDiv.getElementsByTagName('img')[0]
+        const imgDown = downDiv.getElementsByTagName('img')[0]
+
+        var likedByString = collection[i].getAttribute('data-likedBy')
+        var likedByArray = likedByString.split(',').map(name => name.trim());
+        if (likedByArray.includes(userNickname)) {
+            imgUp.src = "./static/images/thumbs-up-green.svg";
+        }
+
+        var dislikedByString = collection[i].getAttribute('data-dislikedBy')
+        var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
+        if (dislikedByArray.includes(userNickname)) {
+            imgDown.src = "./static/images/thumbs-down-green.svg";
+        }
+    }
 }
 
 export function onError(error) {

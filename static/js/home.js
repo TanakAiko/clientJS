@@ -153,11 +153,11 @@ export function addListenerToLike(collection, action) {
         const p = upDiv.getElementsByTagName('p')[0]
         imgUp.addEventListener(action, (event) => {
 
-            const likedByString = collection[i].getAttribute('data-likedBy')
-            const likedByArray = likedByString.split(',').map(name => name.trim());
+            var likedByString = collection[i].getAttribute('data-likedBy')
+            var likedByArray = likedByString.split(',').map(name => name.trim()).slice(1);
 
-            const dislikedByString = collection[i].getAttribute('data-dislikedBy')
-            const dislikedByArray = dislikedByString.split(',').map(name => name.trim());
+            var dislikedByString = collection[i].getAttribute('data-dislikedBy')
+            var dislikedByArray = dislikedByString.split(',').map(name => name.trim()).slice(1);
 
             if (imgUp.src.includes("thumbs-up.svg")) {
 
@@ -204,11 +204,11 @@ export function addListenerToDislike(collection, action) {
         const p = divDown.getElementsByTagName('p')[0];
         imgDown.addEventListener(action, (event) => {
 
-            const dislikedByString = collection[i].getAttribute('data-dislikedBy')
-            const dislikedByArray = dislikedByString.split(',').map(name => name.trim());
+            var dislikedByString = collection[i].getAttribute('data-dislikedBy')
+            var dislikedByArray = dislikedByString.split(',').map(name => name.trim()).slice(1);
 
-            const likedByString = collection[i].getAttribute('data-likedBy')
-            const likedByArray = likedByString.split(',').map(name => name.trim());
+            var likedByString = collection[i].getAttribute('data-likedBy')
+            var likedByArray = likedByString.split(',').map(name => name.trim()).slice(1);
 
             if (imgDown.src.includes("thumbs-down.svg")) {
                 if (imgUp.src.includes("thumbs-up.svg")) {

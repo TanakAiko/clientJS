@@ -30,9 +30,8 @@ export class Post {
 
                     <img src="${src}" class="postImage">
 
-                    <div class="postRow" data-id="${this.id}" data-likedBy="${this.likedBy} data-dislikedBy="${this.dislikedBy}">
-                        <div class="upDiv"> <img class="shrink up"
-                                src="./static/images/thumbs-up.svg">
+                    <div class="postRow" data-id="${this.id}" data-likedBy="${this.likedBy}" data-dislikedBy="${this.dislikedBy}">
+                        <div class="upDiv"> <img class="shrink up" src="./static/images/thumbs-up.svg">
                             <p>${this.nbrLike}</p>
                         </div>
                         <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down.svg">
