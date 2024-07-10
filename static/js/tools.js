@@ -1,7 +1,7 @@
 import { setLoginRegisterPage } from "./setPage.js";
 import { app, getwayURL } from "./constants.js";
 import { Post } from "./post.js";
-import { addListenerToDislike, addListenerToLike } from "./home.js";
+import { addListenerToDislike, addListenerToLike, addListenerToComment } from "./home.js";
 
 export function onMessage(event) {
     const msg = JSON.parse(event.data);
@@ -107,6 +107,8 @@ async function updatePost(jsonData) {
     addListenerToLike(postRow, 'click')
 
     addListenerToDislike(postRow, 'click')
+
+    addListenerToComment(postRow, 'click')
 }
 
 function initThumbs(collection, userNickname) {

@@ -11,6 +11,8 @@ export async function setHome() {
 
     addListenerToDislike(postRow, 'click')
 
+    addListenerToComment(postRow, 'click')
+
     const logoutButton = document.getElementById("logoutButton")
     logoutButton?.addEventListener("click", (event) => {
         event.preventDefault()
@@ -52,7 +54,6 @@ export async function setHome() {
         listenSubmitPost();
 
         app.ws.send(JSON.stringify({ action: "getAllPost" }));
-
 
     }
 
@@ -136,6 +137,19 @@ function updateLike(idPost, nbrLike, nbrDislike, likedByArray, dislikedByArray) 
     }
 
     app.ws.send(JSON.stringify({ action: "updateLike", data: JSON.stringify(data) }));
+}
+
+export function addListenerToComment(collection, action) {
+    for (let i = 0; i < collection.length; i++) {
+        const idPost = parseInt(collection[i].getAttribute('data-id'))
+        const commentDiv = collection[i].getElementsByClassName('commentDiv')[0]
+        const imgComment = commentDiv.getElementsByTagName('img')[0]
+
+        imgComment.addEventListener(action, (event) => {
+            app.ws.send(JSON.stringify({ action: "getAllComment", data: idPost }));
+            // Here open the post modal
+        })
+    }
 }
 
 export function addListenerToLike(collection, action) {
@@ -328,6 +342,12 @@ export const homePage = `<div id="home">
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div id="onePostModal" class="modal">
+                <div class="notifBlock">
+
                 </div>
             </div>
 

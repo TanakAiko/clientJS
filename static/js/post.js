@@ -37,7 +37,7 @@ export class Post {
                         <div class="downDiv"> <img class="shrink down" src="./static/images/thumbs-down.svg">
                             <p>${this.nbrDislike}</p>
                         </div>
-                        <div> <img class="shrink" src="./static/images/comments-regular.svg">0</div>
+                        <div class="commentDiv"> <img class="shrink" src="./static/images/comments-regular.svg">0</div>
                     </div>
                 </div>`
     }
