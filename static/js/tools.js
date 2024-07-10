@@ -7,11 +7,17 @@ export function onMessage(event) {
     const msg = JSON.parse(event.data);
     switch (msg.action) {
         case 'reply':
-            console.log('Server replied (', msg.action, '): ', msg.data);
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
             break;
         case 'logout':
             console.log('Server replied (', msg.action, '): ', msg.data);
-            if (msg.data === "error") return
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
             deleteCookie("sessionID")
             setLoginRegisterPage()
             break;
@@ -33,15 +39,21 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            updatePost(msg.data)
+            updateLastPost(msg.data)
             break
 
         case 'updateLike':
-            console.log('Server replied (', msg.action, '): ', msg.data);
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
             break;
 
         case 'sendNewLikes':
-            console.log('Server replied (', msg.action, '): ', msg.data);
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
             sendNewLikes(msg.data)
             break
 
@@ -109,6 +121,52 @@ async function updatePost(jsonData) {
     addListenerToDislike(postRow, 'click')
 
     addListenerToComment(postRow, 'click')
+}
+
+async function updateLastPost(jsonData) {
+    const mainContainer = document.getElementsByClassName('main-content')[0]
+    var newContent = ""
+
+    const tabData = JSON.parse(jsonData)
+
+    const posts = tabData.map(item => new Post(
+        item.postID,
+        item.userID,
+        item.nickname,
+        item.categorie,
+        item.likedBy,
+        item.dislikedBy,
+        item.content,
+        item.img,
+        item.imgBase64,
+        item.nbrLike,
+        item.nbrDislike,
+        item.createAt
+    ));
+
+
+    for (const post of posts) {
+        newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`)
+    }
+    mainContainer.insertAdjacentHTML('afterbegin', newContent)
+
+    var postRow = document.getElementsByClassName('postRow');
+
+    console.log("app.user.nickname: ", app.user.nickname);
+
+    var newCollection = new Array();
+    if (postRow.length > 0) {
+        var firstElement = postRow.item(0);
+        newCollection.push(firstElement);
+    }
+
+    initThumbs(newCollection, app.user.nickname)
+
+    addListenerToLike(newCollection, 'click')
+
+    addListenerToDislike(newCollection, 'click')
+
+    addListenerToComment(newCollection, 'click')
 }
 
 function initThumbs(collection, userNickname) {

@@ -166,7 +166,6 @@ export function addListenerToLike(collection, action) {
 
         const p = upDiv.getElementsByTagName('p')[0]
         imgUp.addEventListener(action, (event) => {
-
             var likedByString = collection[i].getAttribute('data-likedBy')
             var likedByArray = likedByString.split(',').map(name => name.trim());
 
@@ -217,7 +216,6 @@ export function addListenerToDislike(collection, action) {
         const imgDown = divDown.getElementsByTagName('img')[0];
         const p = divDown.getElementsByTagName('p')[0];
         imgDown.addEventListener(action, (event) => {
-
             var dislikedByString = collection[i].getAttribute('data-dislikedBy')
             var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
 

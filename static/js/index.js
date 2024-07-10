@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 app.ws.onclose = onClose
             }
+        } else {
+            console.log("Here to set setLoginRegisterPage");
+            setLoginRegisterPage()
         }
     } else {
         console.log("Here to set setLoginRegisterPage");
