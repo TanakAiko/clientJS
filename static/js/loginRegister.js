@@ -1,5 +1,5 @@
 import { setHomePage } from "./setPage.js";
-import { onClose, onOpen, onError, onMessage } from "./tools.js";
+import { onClose, onOpen, onError, onMessage, strToInt } from "./tools.js";
 import { getwayURL, wsURL, app } from "./constants.js";
 
 export async function setLoginRegister() {
@@ -191,9 +191,4 @@ function getDataForm(form) {
     const dataForm = new FormData(form)
     var data = Object.fromEntries(dataForm.entries())
     return data
-}
-
-function strToInt(str) {
-    var num = Number(str)
-    return parseInt(num, 10)
 }

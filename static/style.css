@@ -326,10 +326,6 @@ body {
   background-color: var(--light-grey);
 }
 
-#createPost {
-  position: sticky;
-}
-
 .online {
   position: relative;
 }
@@ -449,6 +445,7 @@ legend {
   width: 450px;
   border: 2px solid var(--dark-green);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
 }
 
 .notifInfo {
@@ -512,8 +509,30 @@ legend {
   margin: 0;
 }
 
+.OnePostBlock {
+  background-color: var(--white);
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 450px;
+  border: 2px solid var(--dark-green);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: sticky;
+}
 
+#inputCommentContent {
+  width: 100%;
+  height: 50px;
+  margin: 10px 0 20px 0;
+  display: inline-block;
+  border: 1px solid var(--dark-green);
+  border-radius: 6px;
+  background: #f1f1f1;
+}
 
+#inputCommentContent:focus {
+  outline: none;
+}
 
 
 

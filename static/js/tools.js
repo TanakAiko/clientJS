@@ -1,6 +1,7 @@
 import { setLoginRegisterPage } from "./setPage.js";
 import { app, getwayURL } from "./constants.js";
 import { Post } from "./post.js";
+import { Comment } from "./comment.js";
 import { addListenerToDislike, addListenerToLike, addListenerToComment } from "./home.js";
 
 export function onMessage(event) {
@@ -31,6 +32,7 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
+            console.log('Server replied (', msg.action, '): ', msg.data);
             updatePost(msg.data)
             break;
 
@@ -55,6 +57,11 @@ export function onMessage(event) {
                 return
             }
             sendNewLikes(msg.data)
+            break
+
+        case 'commentCreate':
+            console.log('Server replied (', msg.action, '): ', msg.data);
+            updateNbrComment(msg.data)
             break
 
         default:
@@ -83,6 +90,15 @@ function sendNewLikes(data) {
     downP.textContent = postData.nbrDislike
 }
 
+async function updateNbrComment(postId) {
+    const post = document.getElementById(postId)
+    const commentDiv = post.getElementsByClassName('postRow')[0].getElementsByClassName('commentDiv')[0]
+    const p = commentDiv.getElementsByTagName('p')[0];
+
+    const countComment = parseInt(commentDiv.textContent.trim()) || 0;
+    p.textContent = countComment + 1;
+}
+
 async function updatePost(jsonData) {
     const mainContainer = document.getElementsByClassName('main-content')[0]
     var newContent = ""
@@ -101,12 +117,38 @@ async function updatePost(jsonData) {
         item.imgBase64,
         item.nbrLike,
         item.nbrDislike,
+        item.comments,
         item.createAt
     ));
 
 
     for (const post of posts) {
-        newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`)
+        var commentsContent = ""
+        var tabComments
+        var nbrComment = 0
+        console.log('post: ', post);
+        if (post.comments !== 'null') {
+            tabComments = JSON.parse(post.comments)
+            const comments = tabComments.map(item => new Comment(
+                item.commentID,
+                item.postID,
+                item.userID,
+                item.nickname,
+                item.likedBy,
+                item.dislikedBy,
+                item.content,
+                item.nbrLike,
+                item.nbrDislike,
+                item.createAt
+            ));
+            nbrComment = comments.length;
+    
+            for (const comment of comments) {
+                commentsContent += comment.getHtml()
+            }
+        }
+
+        newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`, nbrComment, commentsContent)
     }
     mainContainer.insertAdjacentHTML('afterbegin', newContent)
 
@@ -141,12 +183,38 @@ async function updateLastPost(jsonData) {
         item.imgBase64,
         item.nbrLike,
         item.nbrDislike,
+        item.comments,
         item.createAt
     ));
 
 
     for (const post of posts) {
-        newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`)
+        console.log('post: ', post);
+        var commentsContent = ""
+        var tabComments
+        var nbrComment = 0
+        if (post.comments !== 'null') {
+            tabComments = JSON.parse(post.comments)
+            const comments = tabComments.map(item => new Comment(
+                item.commentID,
+                item.postID,
+                item.userID,
+                item.nickname,
+                item.likedBy,
+                item.dislikedBy,
+                item.content,
+                item.nbrLike,
+                item.nbrDislike,
+                item.createAt
+            ));
+            nbrComment = comments.length;
+    
+            for (const comment of comments) {
+                commentsContent += comment.getHtml()
+            }
+        }
+
+        newContent += post.getHtml(`data:image/jpeg;base64,${post.imgBase64}`, nbrComment, commentsContent)
     }
     mainContainer.insertAdjacentHTML('afterbegin', newContent)
 
@@ -267,4 +335,9 @@ export async function getUserData(sessionId) {
     } catch (error) {
         console.error(`Error while sending data`, error);
     }
+}
+
+export function strToInt(str) {
+    var num = Number(str)
+    return parseInt(num, 10)
 }
