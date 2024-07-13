@@ -182,6 +182,11 @@ a:hover {
   align-items: center;
 }
 
+.postRow p {
+  padding: 0;
+  margin: 0;
+}
+
 .postRow div {
   display: inline-flex;
   align-items: center;
@@ -193,6 +198,30 @@ a:hover {
 }
 
 .postRow div img {
+  width: 40px;
+}
+
+.commentRow {
+  display: flex;
+  align-items: center;
+}
+
+.commentRow p {
+  padding: 0;
+  margin: 0;
+}
+
+.commentRow div {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 25px;
+}
+
+.commentRow img {
+  margin-right: 6px;
+}
+
+.commentRow div img {
   width: 40px;
 }
 
@@ -502,11 +531,6 @@ legend {
 
 .allNotif::-webkit-scrollbar-thumb {
   background: transparent;
-}
-
-.postRow p {
-  padding: 0;
-  margin: 0;
 }
 
 .OnePostBlock {

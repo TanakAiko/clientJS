@@ -32,7 +32,6 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            console.log('Server replied (', msg.action, '): ', msg.data);
             updatePost(msg.data)
             break;
 
@@ -44,24 +43,50 @@ export function onMessage(event) {
             updateLastPost(msg.data)
             break
 
-        case 'updateLike':
+        case 'updatePostLike':
             if (msg.data === "error") {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
             break;
 
-        case 'sendNewLikes':
+        case 'sendNewPostLikes':
             if (msg.data === "error") {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            sendNewLikes(msg.data)
+            sendNewLikes(msg.data, 'post')
             break
 
         case 'commentCreate':
-            console.log('Server replied (', msg.action, '): ', msg.data);
-            updateNbrComment(msg.data)
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            /* updateNbrComment(msg.data) */
+            break
+
+        case 'updateLastComment':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            updateLastComment(msg.data)
+            break
+
+        case 'updateCommentLike':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            break
+
+        case 'sendNewCommentLikes':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            sendNewLikes(msg.data, 'comment')
             break
 
         default:
@@ -69,25 +94,47 @@ export function onMessage(event) {
     }
 }
 
-function sendNewLikes(data) {
-    const postData = JSON.parse(data)
+async function updateLastComment(jsonData) {
+    const comment = Comment.fromObject(JSON.parse(jsonData))
 
-    const post = document.getElementById(postData.postID).getElementsByClassName('postRow')[0]
+    const post = document.getElementById(`${comment.postId}`)
+    updateNbrComment(comment.postId)
+    const commentContainer = post.getElementsByClassName('commentContainer')[0]
+    commentContainer.insertAdjacentHTML('afterbegin', comment.getHtml())
 
-    const upDiv = post.getElementsByClassName('upDiv')[0];
-    const downDiv = post.getElementsByClassName('downDiv')[0];
+    var commentHTML = document.getElementById(`${comment.id}-comment`);
+    var commentRow = commentHTML.getElementsByClassName('commentRow');
+
+    initThumbs(commentRow, app.user.nickname)
+
+    addListenerToLike(commentRow, 'click', 'comment')
+
+    addListenerToDislike(commentRow, 'click', 'comment')
+}
+
+function sendNewLikes(data, action) {
+    const elementData = JSON.parse(data)
+    var element
+    if (action === 'post') {
+        element = document.getElementById(elementData.postID).getElementsByClassName('postRow')[0]
+    } else if (action === 'comment') {
+        element = document.getElementById(`${elementData.commentID}-comment`).getElementsByClassName('commentRow')[0]
+    }
+
+    const upDiv = element.getElementsByClassName('upDiv')[0];
+    const downDiv = element.getElementsByClassName('downDiv')[0];
 
     const upP = upDiv.getElementsByTagName('p')[0];
     const downP = downDiv.getElementsByTagName('p')[0];
 
-    var newLikedByString = postData.likedBy.join(', ');
-    post.setAttribute('data-likedBy', newLikedByString);
+    var newLikedByString = elementData.likedBy.join(', ');
+    element.setAttribute('data-likedBy', newLikedByString);
 
-    var newDislikedByString = postData.dislikedBy.join(', ');
-    post.setAttribute('data-dislikedBy', newDislikedByString);
+    var newDislikedByString = elementData.dislikedBy.join(', ');
+    element.setAttribute('data-dislikedBy', newDislikedByString);
 
-    upP.textContent = postData.nbrLike
-    downP.textContent = postData.nbrDislike
+    upP.textContent = elementData.nbrLike
+    downP.textContent = elementData.nbrDislike
 }
 
 async function updateNbrComment(postId) {
@@ -142,7 +189,7 @@ async function updatePost(jsonData) {
                 item.createAt
             ));
             nbrComment = comments.length;
-    
+
             for (const comment of comments) {
                 commentsContent += comment.getHtml()
             }
@@ -153,16 +200,25 @@ async function updatePost(jsonData) {
     mainContainer.insertAdjacentHTML('afterbegin', newContent)
 
     var postRow = document.getElementsByClassName('postRow');
+    var commentRow = document.getElementsByClassName('commentRow');
 
     console.log("app.user.nickname: ", app.user.nickname);
 
     initThumbs(postRow, app.user.nickname)
 
-    addListenerToLike(postRow, 'click')
+    addListenerToLike(postRow, 'click', 'post')
 
-    addListenerToDislike(postRow, 'click')
+    addListenerToDislike(postRow, 'click', 'post')
 
     addListenerToComment(postRow, 'click')
+
+    if (commentRow.length === 0) return;
+
+    initThumbs(commentRow, app.user.nickname)
+
+    addListenerToLike(commentRow, 'click', 'comment')
+
+    addListenerToDislike(commentRow, 'click', 'comment')
 }
 
 async function updateLastPost(jsonData) {
@@ -208,7 +264,7 @@ async function updateLastPost(jsonData) {
                 item.createAt
             ));
             nbrComment = comments.length;
-    
+
             for (const comment of comments) {
                 commentsContent += comment.getHtml()
             }
@@ -222,19 +278,34 @@ async function updateLastPost(jsonData) {
 
     console.log("app.user.nickname: ", app.user.nickname);
 
-    var newCollection = new Array();
+    var newCollectionPost = new Array();
     if (postRow.length > 0) {
         var firstElement = postRow.item(0);
-        newCollection.push(firstElement);
+        newCollectionPost.push(firstElement);
     }
 
-    initThumbs(newCollection, app.user.nickname)
 
-    addListenerToLike(newCollection, 'click')
+    /* var commentRow = document.getElementsByClassName('commentRow');
+    var newCollectionComment = new Array();
+    if (postRow.length > 0) {
+        var firstElement = commentRow.item(0);
+        newCollectionComment.push(firstElement);
+    } */
 
-    addListenerToDislike(newCollection, 'click')
+    initThumbs(newCollectionPost, app.user.nickname)
 
-    addListenerToComment(newCollection, 'click')
+    addListenerToLike(newCollectionPost, 'click', 'post')
+
+    addListenerToDislike(newCollectionPost, 'click', 'post')
+
+    addListenerToComment(newCollectionPost, 'click')
+
+    /* initThumbs(newCollectionComment, app.user.nickname)
+
+    addListenerToLike(newCollectionComment, 'click', 'comment')
+
+    addListenerToDislike(newCollectionComment, 'click', 'comment') */
+
 }
 
 function initThumbs(collection, userNickname) {

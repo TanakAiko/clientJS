@@ -13,7 +13,7 @@ export class Comment {
     }
 
     getHtml() {
-        return `<div id="${this.id}" data-postId="${this.postId}">
+        return `<div id="${this.id}-comment" data-postId="${this.postId}">
                     <div class="user-prfile">
                         <img src="./static/images/user-alt.svg">
                         <div>
@@ -24,7 +24,7 @@ export class Comment {
 
                     <p class="commentText">${this.content}</p>
 
-                    <div class="postRow" data-id="${this.id}" data-likedBy="${this.likedBy}" data-dislikedBy="${this.dislikedBy}">
+                    <div class="commentRow" data-id="${this.id}" data-likedBy="${this.likedBy}" data-dislikedBy="${this.dislikedBy}">
                         <div class="upDiv">
                             <img class="shrink up" src="./static/images/thumbs-up.svg">
                             <p>${this.nbrLike}</p>
@@ -36,6 +36,21 @@ export class Comment {
                     </div>
                 </div>
         `
+    }
+
+    static fromObject(obj) {
+        return new Comment(
+            obj.commentID,
+            obj.postID,
+            obj.userID,
+            obj.nickname,
+            obj.likedBy,
+            obj.dislikedBy,
+            obj.content,
+            obj.nbrLike,
+            obj.nbrDislike,
+            obj.createAt
+        );
     }
 
 }

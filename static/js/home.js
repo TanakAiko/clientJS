@@ -8,9 +8,9 @@ export async function setHome() {
     const modalNotif = document.getElementById('notifModal');
     var postRow = document.getElementsByClassName('postRow');
 
-    addListenerToLike(postRow, 'click')
+    addListenerToLike(postRow, 'click', 'post')
 
-    addListenerToDislike(postRow, 'click')
+    addListenerToDislike(postRow, 'click', 'post')
 
     addListenerToComment(postRow, 'click')
 
@@ -77,6 +77,8 @@ export async function setHome() {
             data.img = await processFile(data.img)
 
             app.ws.send(JSON.stringify({ action: "postCreate", data: JSON.stringify(data) }));
+
+            createPostForm.reset()
         })
     }
 
@@ -94,9 +96,9 @@ export async function setHome() {
 
             console.log("data submit comment :", data);
 
-
-
             app.ws.send(JSON.stringify({ action: "commentCreate", data: JSON.stringify(data) }));
+
+            createCommentForm.reset()
         })
     }
 
@@ -158,16 +160,26 @@ function getDataCreateCommentForm(form) {
     return data;
 }
 
-function updateLike(idPost, nbrLike, nbrDislike, likedByArray, dislikedByArray) {
-    const data = {
-        postID: idPost,
-        nbrLike: nbrLike,
-        nbrDislike: nbrDislike,
-        likedBy: likedByArray,
-        dislikedBy: dislikedByArray
+function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, action) {
+    if (action === 'post') {
+        const data = {
+            postID: id,
+            nbrLike: nbrLike,
+            nbrDislike: nbrDislike,
+            likedBy: likedByArray,
+            dislikedBy: dislikedByArray
+        }
+        app.ws.send(JSON.stringify({ action: "updatePostLike", data: JSON.stringify(data) }));
+    } else if (action === 'comment') {
+        const data = {
+            commentID: id,
+            nbrLike: nbrLike,
+            nbrDislike: nbrDislike,
+            likedBy: likedByArray,
+            dislikedBy: dislikedByArray
+        }
+        app.ws.send(JSON.stringify({ action: "updateCommentLike", data: JSON.stringify(data) }));
     }
-
-    app.ws.send(JSON.stringify({ action: "updateLike", data: JSON.stringify(data) }));
 }
 
 export function addListenerToComment(collection, action) {
@@ -185,10 +197,10 @@ export function addListenerToComment(collection, action) {
     }
 }
 
-export function addListenerToLike(collection, action) {
+export function addListenerToLike(collection, action, element) {
     for (let i = 0; i < collection.length; i++) {
 
-        const idPost = parseInt(collection[i].getAttribute('data-id'))
+        const id = parseInt(collection[i].getAttribute('data-id'))
 
         const upDiv = collection[i].getElementsByClassName('upDiv')[0]
         const downDiv = collection[i].getElementsByClassName('downDiv')[0]
@@ -218,7 +230,7 @@ export function addListenerToLike(collection, action) {
 
                     const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
-                    updateLike(idPost, countLike + 1, countDislike, likedByArray, dislikedByArray)
+                    updateLike(id, countLike + 1, countDislike, likedByArray, dislikedByArray, element)
                 }
 
             } else {
@@ -231,17 +243,17 @@ export function addListenerToLike(collection, action) {
 
                 const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
-                updateLike(idPost, countLike - 1, countDislike, likedByArray, dislikedByArray)
+                updateLike(id, countLike - 1, countDislike, likedByArray, dislikedByArray, element)
             }
         });
 
     }
 }
 
-export function addListenerToDislike(collection, action) {
+export function addListenerToDislike(collection, action, element) {
     for (let i = 0; i < collection.length; i++) {
 
-        const idPost = parseInt(collection[i].getAttribute('data-id'))
+        const id = parseInt(collection[i].getAttribute('data-id'))
 
         const divUp = collection[i].getElementsByClassName('upDiv')[0];
         const divDown = collection[i].getElementsByClassName('downDiv')[0];
@@ -266,7 +278,7 @@ export function addListenerToDislike(collection, action) {
 
                     const countLike = parseInt(divUp.textContent.trim()) || 0;
 
-                    updateLike(idPost, countLike, countDislike + 1, likedByArray, dislikedByArray)
+                    updateLike(id, countLike, countDislike + 1, likedByArray, dislikedByArray, element)
                 }
             } else {
                 dislikedByArray = dislikedByArray.filter(name => name !== app.user.nickname);
@@ -277,7 +289,7 @@ export function addListenerToDislike(collection, action) {
 
                 const countLike = parseInt(divUp.textContent.trim()) || 0;
 
-                updateLike(idPost, countLike, countDislike - 1, likedByArray, dislikedByArray)
+                updateLike(id, countLike, countDislike - 1, likedByArray, dislikedByArray, element)
             }
         });
 
