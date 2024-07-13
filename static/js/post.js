@@ -46,7 +46,7 @@ export class Post {
                         </div>
                     </div>
 
-                    <div class="commentContainer">${allComments}</div>
+                    <div class="commentContainer" style="display: none;">${allComments}</div>
                 </div>`
     }
 

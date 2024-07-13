@@ -110,10 +110,6 @@ export async function setHome() {
         modalCreatePost.style.display = 'block';
     }
 
-    /* function openOnePostModal() {
-        modalOnePost.style.display = 'block';
-    } */
-
     function closeModal() {
         modalCreatePost.style.display = 'none';
         modalNotif.style.display = 'none';
@@ -184,15 +180,37 @@ function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, acti
 
 export function addListenerToComment(collection, action) {
     const modalOnePost = document.getElementById('onePostModal')
+    const imgPostModal = document.getElementById('comment-post-image')
+    const postAuthorModal = document.getElementById('comment-post-author')
+    const postDateModal = document.getElementById('comment-post-date')
+    const postCategoriesModal = document.getElementById('comment-post-categories')
+    const postContentModal = document.getElementById('comment-post-text')
+    const commentsZoneModal = document.getElementById('comments-zone')
 
     for (let i = 0; i < collection.length; i++) {
         const idPost = parseInt(collection[i].getAttribute('data-id'))
         const commentDiv = collection[i].getElementsByClassName('commentDiv')[0]
         const imgComment = commentDiv.getElementsByTagName('img')[0]
-        
+
+        const imgPost = document.getElementById(`${idPost}`).getElementsByClassName('postImage')[0]
+
+        const authorNickname = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('p')[0]
+        const postCreate = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('span')[0]
+        const categories = document.getElementById(`${idPost}`).getElementsByClassName('postCategories')[0]
+        const content = document.getElementById(`${idPost}`).getElementsByClassName('postText')[0]
+        const allComments = document.getElementById(`${idPost}`).getElementsByClassName('commentContainer')[0]
+
         imgComment.addEventListener(action, (event) => {
             modalOnePost.setAttribute('data-postId', idPost);
-            modalOnePost.style.display = 'block';
+
+            imgPostModal.src = imgPost.src
+            postAuthorModal.textContent = authorNickname.textContent
+            postDateModal.textContent = postCreate.textContent
+            postCategoriesModal.textContent = categories.textContent
+            postContentModal.textContent = content.textContent
+            commentsZoneModal.textContent = allComments.textContent
+
+            modalOnePost.style.display = 'flex';
         })
     }
 }
@@ -390,6 +408,21 @@ export const homePage = `<div id="home">
 
 <div id="onePostModal" class="modal">
     <div class="OnePostBlock">
+
+        <div id="post-zone">
+            <div id="comment-post-image-zone">
+                <img id="comment-post-image" src="" alt="">
+            </div>
+            <div id="comment-post-content">
+                <span id="comment-post-author"></span>
+                <span id="comment-post-date"></span>
+                <span id="comment-post-categories"></span>
+                <span id="comment-post-text"></span>
+            </div>
+        </div>
+
+        <div id="comments-zone"></div>
+
         <form id="createCommentForm">
 
             <h1 id="createPostTitle">Create a Comment</h1>

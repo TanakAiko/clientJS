@@ -9,6 +9,7 @@
   --middle-blue: #303F9F;
   --black: #131010;
   --very-dark-grey: #121212;
+  --std-space: 12px;
 }
 
 body {
@@ -534,14 +535,14 @@ legend {
 }
 
 .OnePostBlock {
-  background-color: var(--white);
-  margin: 15% auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 450px;
-  border: 2px solid var(--dark-green);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: sticky;
+  height: 90vh;
+  width: clamp(250px, 60vw, 800px);
+  background-color: white;
+  border-radius: var(--std-space);
+  padding: var(--std-space);
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--std-space);
 }
 
 #inputCommentContent {
@@ -556,6 +557,75 @@ legend {
 
 #inputCommentContent:focus {
   outline: none;
+}
+
+
+
+
+#post-zone {
+  height: 30%;
+  display: flex;
+  flex-direction: row;
+  column-gap: var(--std-space);
+}
+
+#comment-post-image-zone {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 30%;
+}
+
+#comment-post-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+#comment-post-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+#comments-zone {
+  flex-grow: 1;
+  width: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--std-space);
+}
+
+.single-comment {
+  display: flex;
+  flex-direction: column;
+  background-color: #eee;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.single-comment-author-date {
+  display: flex;
+  flex-direction: row;
+  column-gap: var(--std-space);
+}
+
+#onePostModal {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 

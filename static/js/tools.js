@@ -98,13 +98,17 @@ async function updateLastComment(jsonData) {
     const comment = Comment.fromObject(JSON.parse(jsonData))
 
     const post = document.getElementById(`${comment.postId}`)
-    updateNbrComment(comment.postId)
     const commentContainer = post.getElementsByClassName('commentContainer')[0]
+    
+    //const commentsZone = document.getElementById('comments-zone')
+    
     commentContainer.insertAdjacentHTML('afterbegin', comment.getHtml())
-
+    
     var commentHTML = document.getElementById(`${comment.id}-comment`);
     var commentRow = commentHTML.getElementsByClassName('commentRow');
-
+    
+    updateNbrComment(comment.postId)
+    
     initThumbs(commentRow, app.user.nickname)
 
     addListenerToLike(commentRow, 'click', 'comment')
