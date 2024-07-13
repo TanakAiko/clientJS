@@ -13,7 +13,7 @@ export class Comment {
     }
 
     getHtml() {
-        return `<div id="${this.id}-comment" data-postId="${this.postId}">
+        return `<div class="comments" id="${this.id}-comment" data-postId="${this.postId}">
                     <div class="user-prfile">
                         <img src="./static/images/user-alt.svg">
                         <div>

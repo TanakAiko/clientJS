@@ -628,6 +628,9 @@ legend {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+.comments{
+  border: 1px solid var(--dark-green);
+}
 
 
 

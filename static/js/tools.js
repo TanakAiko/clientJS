@@ -100,20 +100,9 @@ async function updateLastComment(jsonData) {
     const post = document.getElementById(`${comment.postId}`)
     const commentContainer = post.getElementsByClassName('commentContainer')[0]
     
-    //const commentsZone = document.getElementById('comments-zone')
-    
     commentContainer.insertAdjacentHTML('afterbegin', comment.getHtml())
-    
-    var commentHTML = document.getElementById(`${comment.id}-comment`);
-    var commentRow = commentHTML.getElementsByClassName('commentRow');
-    
+
     updateNbrComment(comment.postId)
-    
-    initThumbs(commentRow, app.user.nickname)
-
-    addListenerToLike(commentRow, 'click', 'comment')
-
-    addListenerToDislike(commentRow, 'click', 'comment')
 }
 
 function sendNewLikes(data, action) {
@@ -312,7 +301,7 @@ async function updateLastPost(jsonData) {
 
 }
 
-function initThumbs(collection, userNickname) {
+export function initThumbs(collection, userNickname) {
     for (let i = 0; i < collection.length; i++) {
         const upDiv = collection[i].getElementsByClassName('upDiv')[0]
         const downDiv = collection[i].getElementsByClassName('downDiv')[0]

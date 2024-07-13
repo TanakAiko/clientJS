@@ -1,5 +1,5 @@
 import { app } from "./constants.js";
-import { getCookieValue, strToInt } from "./tools.js";
+import { getCookieValue, strToInt, initThumbs } from "./tools.js";
 
 export async function setHome() {
     const modalCreatePost = document.getElementById('createPostModal');
@@ -204,11 +204,19 @@ export function addListenerToComment(collection, action) {
             modalOnePost.setAttribute('data-postId', idPost);
 
             imgPostModal.src = imgPost.src
-            postAuthorModal.textContent = authorNickname.textContent
-            postDateModal.textContent = postCreate.textContent
-            postCategoriesModal.textContent = categories.textContent
-            postContentModal.textContent = content.textContent
-            commentsZoneModal.textContent = allComments.textContent
+            postAuthorModal.innerHTML = authorNickname.innerHTML
+            postDateModal.innerHTML = postCreate.innerHTML
+            postCategoriesModal.innerHTML = categories.innerHTML
+            postContentModal.innerHTML = content.innerHTML
+            commentsZoneModal.innerHTML = allComments.innerHTML
+
+            var commentRow = document.getElementsByClassName('commentRow');
+
+            initThumbs(commentRow, app.user.nickname)
+
+            addListenerToLike(commentRow, 'click', 'comment')
+
+            addListenerToDislike(commentRow, 'click', 'comment')
 
             modalOnePost.style.display = 'flex';
         })
@@ -425,7 +433,6 @@ export const homePage = `<div id="home">
 
         <form id="createCommentForm">
 
-            <h1 id="createPostTitle">Create a Comment</h1>
             <hr>
 
             <label for="inputCommentContent"><b>Description:</b></label>
