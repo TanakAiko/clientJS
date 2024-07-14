@@ -24,7 +24,7 @@ export class Comment {
 
                     <p class="commentText">${this.content}</p>
 
-                    <div class="commentRow" data-id="${this.id}" data-likedBy="${this.likedBy}" data-dislikedBy="${this.dislikedBy}">
+                    <div class="commentRow" data-id="${this.id}" data-postId="${this.postId}" data-likedBy="${this.likedBy}" data-dislikedBy="${this.dislikedBy}">
                         <div class="upDiv">
                             <img class="shrink up" src="./static/images/thumbs-up.svg">
                             <p>${this.nbrLike}</p>

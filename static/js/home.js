@@ -94,7 +94,7 @@ export async function setHome() {
             data.userId = app.user.userId
             data.nickname = app.user.nickname
 
-            console.log("data submit comment :", data);
+            // console.log("data submit comment :", data);
 
             app.ws.send(JSON.stringify({ action: "commentCreate", data: JSON.stringify(data) }));
 
@@ -165,6 +165,8 @@ function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, acti
             likedBy: likedByArray,
             dislikedBy: dislikedByArray
         }
+
+        // console.log('data to send to the server (POST) : ', data);
         app.ws.send(JSON.stringify({ action: "updatePostLike", data: JSON.stringify(data) }));
     } else if (action === 'comment') {
         const data = {
@@ -174,6 +176,7 @@ function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, acti
             likedBy: likedByArray,
             dislikedBy: dislikedByArray
         }
+        // console.log('data to send to the server (COMMENT) : ', data);
         app.ws.send(JSON.stringify({ action: "updateCommentLike", data: JSON.stringify(data) }));
     }
 }
@@ -188,19 +191,19 @@ export function addListenerToComment(collection, action) {
     const commentsZoneModal = document.getElementById('comments-zone')
 
     for (let i = 0; i < collection.length; i++) {
+
         const idPost = parseInt(collection[i].getAttribute('data-id'))
         const commentDiv = collection[i].getElementsByClassName('commentDiv')[0]
         const imgComment = commentDiv.getElementsByTagName('img')[0]
 
-        const imgPost = document.getElementById(`${idPost}`).getElementsByClassName('postImage')[0]
-
-        const authorNickname = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('p')[0]
-        const postCreate = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('span')[0]
-        const categories = document.getElementById(`${idPost}`).getElementsByClassName('postCategories')[0]
-        const content = document.getElementById(`${idPost}`).getElementsByClassName('postText')[0]
-        const allComments = document.getElementById(`${idPost}`).getElementsByClassName('commentContainer')[0]
-
         imgComment.addEventListener(action, (event) => {
+            const imgPost = document.getElementById(`${idPost}`).getElementsByClassName('postImage')[0]
+            const authorNickname = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('p')[0]
+            const postCreate = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('span')[0]
+            const categories = document.getElementById(`${idPost}`).getElementsByClassName('postCategories')[0]
+            const content = document.getElementById(`${idPost}`).getElementsByClassName('postText')[0]
+            const allComments = document.getElementById(`${idPost}`).getElementsByClassName('commentContainer')[0]
+
             modalOnePost.setAttribute('data-postId', idPost);
 
             imgPostModal.src = imgPost.src
@@ -208,9 +211,18 @@ export function addListenerToComment(collection, action) {
             postDateModal.innerHTML = postCreate.innerHTML
             postCategoriesModal.innerHTML = categories.innerHTML
             postContentModal.innerHTML = content.innerHTML
+
+            
+
             commentsZoneModal.innerHTML = allComments.innerHTML
 
-            var commentRow = document.getElementsByClassName('commentRow');
+            var commentRow = commentsZoneModal.getElementsByClassName('commentRow');
+
+            console.log("app.user.nickname: ", app.user.nickname);
+
+            modalOnePost.style.display = 'flex';
+
+            if (commentRow.length === 0) return;
 
             initThumbs(commentRow, app.user.nickname)
 
@@ -218,9 +230,28 @@ export function addListenerToComment(collection, action) {
 
             addListenerToDislike(commentRow, 'click', 'comment')
 
-            modalOnePost.style.display = 'flex';
+            // console.log('commentRow: ', commentRow);
+
         })
     }
+}
+
+function updateCommentsPost(commentRow) {
+    const postId = commentRow.getAttribute('data-postId')
+    const commentContainer = document.getElementById(postId).getElementsByClassName('commentContainer')[0]
+    const commentsZoneModal = document.getElementById('comments-zone')
+
+    //console.log('commentsZoneModal: ', commentsZoneModal);
+
+    commentContainer.innerHTML = commentsZoneModal.innerHTML
+
+    //console.log('commentContainer: ', commentContainer);
+}
+
+function addNewLikedUser(commentRow, Array) {
+    var newString = Array.join(', ');
+    commentRow.setAttribute('data-likedBy', newString);
+   // console.log("Here it's set ******************", commentRow);
 }
 
 export function addListenerToLike(collection, action, element) {
@@ -231,16 +262,18 @@ export function addListenerToLike(collection, action, element) {
         const upDiv = collection[i].getElementsByClassName('upDiv')[0]
         const downDiv = collection[i].getElementsByClassName('downDiv')[0]
 
-
         const imgUp = upDiv.getElementsByTagName('img')[0]
         const imgDown = downDiv.getElementsByTagName('img')[0]
 
         const p = upDiv.getElementsByTagName('p')[0]
+
         imgUp.addEventListener(action, (event) => {
             var likedByString = collection[i].getAttribute('data-likedBy')
+            if (likedByString === null) likedByString = ''
             var likedByArray = likedByString.split(',').map(name => name.trim());
 
             var dislikedByString = collection[i].getAttribute('data-dislikedBy')
+            if (dislikedByString === null) dislikedByString = ''
             var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
 
             if (imgUp.src.includes("thumbs-up.svg")) {
@@ -257,6 +290,8 @@ export function addListenerToLike(collection, action, element) {
                     const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
                     updateLike(id, countLike + 1, countDislike, likedByArray, dislikedByArray, element)
+                    addNewLikedUser(collection[i], likedByArray)
+                    if (element === 'comment') updateCommentsPost(collection[i]);
                 }
 
             } else {
@@ -270,6 +305,8 @@ export function addListenerToLike(collection, action, element) {
                 const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
                 updateLike(id, countLike - 1, countDislike, likedByArray, dislikedByArray, element)
+                addNewLikedUser(collection[i], likedByArray)
+                if (element === 'comment') updateCommentsPost(collection[i]);
             }
         });
 
@@ -287,11 +324,13 @@ export function addListenerToDislike(collection, action, element) {
         const imgDown = divDown.getElementsByTagName('img')[0];
         const p = divDown.getElementsByTagName('p')[0];
         imgDown.addEventListener(action, (event) => {
-            var dislikedByString = collection[i].getAttribute('data-dislikedBy')
-            var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
-
             var likedByString = collection[i].getAttribute('data-likedBy')
+            if (likedByString === null) likedByString = ''
             var likedByArray = likedByString.split(',').map(name => name.trim());
+
+            var dislikedByString = collection[i].getAttribute('data-dislikedBy')
+            if (dislikedByString === null) dislikedByString = ''
+            var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
 
             if (imgDown.src.includes("thumbs-down.svg")) {
                 if (imgUp.src.includes("thumbs-up.svg")) {
@@ -305,6 +344,9 @@ export function addListenerToDislike(collection, action, element) {
                     const countLike = parseInt(divUp.textContent.trim()) || 0;
 
                     updateLike(id, countLike, countDislike + 1, likedByArray, dislikedByArray, element)
+
+                    addNewLikedUser(collection[i], dislikedByArray)
+                    if (element === 'comment') updateCommentsPost(collection[i]);
                 }
             } else {
                 dislikedByArray = dislikedByArray.filter(name => name !== app.user.nickname);
@@ -316,6 +358,9 @@ export function addListenerToDislike(collection, action, element) {
                 const countLike = parseInt(divUp.textContent.trim()) || 0;
 
                 updateLike(id, countLike, countDislike - 1, likedByArray, dislikedByArray, element)
+
+                addNewLikedUser(collection[i], dislikedByArray);
+                if (element === 'comment') updateCommentsPost(collection[i]);
             }
         });
 

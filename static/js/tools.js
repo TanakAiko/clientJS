@@ -99,7 +99,7 @@ async function updateLastComment(jsonData) {
 
     const post = document.getElementById(`${comment.postId}`)
     const commentContainer = post.getElementsByClassName('commentContainer')[0]
-    
+
     commentContainer.insertAdjacentHTML('afterbegin', comment.getHtml())
 
     updateNbrComment(comment.postId)
@@ -194,8 +194,6 @@ async function updatePost(jsonData) {
 
     var postRow = document.getElementsByClassName('postRow');
     var commentRow = document.getElementsByClassName('commentRow');
-
-    console.log("app.user.nickname: ", app.user.nickname);
 
     initThumbs(postRow, app.user.nickname)
 
@@ -311,19 +309,30 @@ export function initThumbs(collection, userNickname) {
         const imgDown = downDiv.getElementsByTagName('img')[0]
 
         var likedByString = collection[i].getAttribute('data-likedBy')
-        var likedByArray = likedByString.split(',').map(name => name.trim());
-        if (likedByArray.includes(userNickname)) {
-            imgUp.src = "./static/images/thumbs-up-green.svg";
-        } else {
-            imgUp.src = "./static/images/thumbs-up.svg";
+        if (likedByString !== null) {
+            var likedByArray = likedByString.split(',').map(name => name.trim());
+
+            if (likedByArray.includes(userNickname)) {
+                imgUp.src = "./static/images/thumbs-up-green.svg";
+                // console.log("imgUp.src = green");
+            } else {
+                imgUp.src = "./static/images/thumbs-up.svg";
+                // console.log("imgUp.src = void");
+            }
         }
 
         var dislikedByString = collection[i].getAttribute('data-dislikedBy')
-        var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
-        if (dislikedByArray.includes(userNickname)) {
-            imgDown.src = "./static/images/thumbs-down-green.svg";
-        } else {
-            imgDown.src = "./static/images/thumbs-down.svg";
+
+        if (dislikedByString !== null) {
+            var dislikedByArray = dislikedByString.split(',').map(name => name.trim());
+
+            if (dislikedByArray.includes(userNickname)) {
+                imgDown.src = "./static/images/thumbs-down-green.svg";
+                // console.log("imgDown.src = green");
+            } else {
+                imgDown.src = "./static/images/thumbs-down.svg";
+                // console.log("imgDown.src = void");
+            }
         }
     }
 }
