@@ -46,7 +46,10 @@ export class Post {
                         </div>
                     </div>
 
-                    <div class="commentContainer" style="display: none;">${allComments}</div>
+                    <div id="${this.id}-blockComment" class="commentContainer" style="display: none;">
+                        ${allComments}
+                        <button type="submit" id="${this.id}-openModal">New comment</button>
+                    </div>
                 </div>`
     }
 

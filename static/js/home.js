@@ -176,7 +176,7 @@ function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, acti
             likedBy: likedByArray,
             dislikedBy: dislikedByArray
         }
-        // console.log('data to send to the server (COMMENT) : ', data);
+        console.log('data to send to the server (COMMENT) : ', data);
         app.ws.send(JSON.stringify({ action: "updateCommentLike", data: JSON.stringify(data) }));
     }
 }
@@ -188,70 +188,50 @@ export function addListenerToComment(collection, action) {
     const postDateModal = document.getElementById('comment-post-date')
     const postCategoriesModal = document.getElementById('comment-post-categories')
     const postContentModal = document.getElementById('comment-post-text')
-    const commentsZoneModal = document.getElementById('comments-zone')
 
     for (let i = 0; i < collection.length; i++) {
 
-        const idPost = parseInt(collection[i].getAttribute('data-id'))
         const commentDiv = collection[i].getElementsByClassName('commentDiv')[0]
         const imgComment = commentDiv.getElementsByTagName('img')[0]
+        const idPost = parseInt(collection[i].getAttribute('data-id'))
 
         imgComment.addEventListener(action, (event) => {
-            const imgPost = document.getElementById(`${idPost}`).getElementsByClassName('postImage')[0]
-            const authorNickname = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('p')[0]
-            const postCreate = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('span')[0]
-            const categories = document.getElementById(`${idPost}`).getElementsByClassName('postCategories')[0]
-            const content = document.getElementById(`${idPost}`).getElementsByClassName('postText')[0]
-            const allComments = document.getElementById(`${idPost}`).getElementsByClassName('commentContainer')[0]
 
-            modalOnePost.setAttribute('data-postId', idPost);
+            const blockComment = document.getElementById(`${idPost}-blockComment`)
+            if (blockComment.style.display === 'none') {
+                blockComment.style.display = 'block'
 
-            imgPostModal.src = imgPost.src
-            postAuthorModal.innerHTML = authorNickname.innerHTML
-            postDateModal.innerHTML = postCreate.innerHTML
-            postCategoriesModal.innerHTML = categories.innerHTML
-            postContentModal.innerHTML = content.innerHTML
+                const buttonOpenModal = document.getElementById(`${idPost}-openModal`)
+                buttonOpenModal.addEventListener(action, (event) => {
+                    const imgPost = document.getElementById(`${idPost}`).getElementsByClassName('postImage')[0]
+                    const authorNickname = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('p')[0]
+                    const postCreate = document.getElementById(`${idPost}`).getElementsByClassName('user-prfile')[0].getElementsByTagName('div')[0].getElementsByTagName('span')[0]
+                    const categories = document.getElementById(`${idPost}`).getElementsByClassName('postCategories')[0]
+                    const content = document.getElementById(`${idPost}`).getElementsByClassName('postText')[0]
 
-            
+                    modalOnePost.setAttribute('data-postId', idPost);
 
-            commentsZoneModal.innerHTML = allComments.innerHTML
+                    imgPostModal.src = imgPost.src
+                    postAuthorModal.innerHTML = authorNickname.innerHTML
+                    postDateModal.innerHTML = postCreate.innerHTML
+                    postCategoriesModal.innerHTML = categories.innerHTML
+                    postContentModal.innerHTML = content.innerHTML
 
-            var commentRow = commentsZoneModal.getElementsByClassName('commentRow');
+                    modalOnePost.style.display = 'flex';
+                })
 
-            console.log("app.user.nickname: ", app.user.nickname);
-
-            modalOnePost.style.display = 'flex';
-
-            if (commentRow.length === 0) return;
-
-            initThumbs(commentRow, app.user.nickname)
-
-            addListenerToLike(commentRow, 'click', 'comment')
-
-            addListenerToDislike(commentRow, 'click', 'comment')
-
-            // console.log('commentRow: ', commentRow);
-
+            } else if (blockComment.style.display === 'block') {
+                blockComment.style.display = 'none'
+            }
         })
     }
 }
 
-function updateCommentsPost(commentRow) {
-    const postId = commentRow.getAttribute('data-postId')
-    const commentContainer = document.getElementById(postId).getElementsByClassName('commentContainer')[0]
-    const commentsZoneModal = document.getElementById('comments-zone')
-
-    //console.log('commentsZoneModal: ', commentsZoneModal);
-
-    commentContainer.innerHTML = commentsZoneModal.innerHTML
-
-    //console.log('commentContainer: ', commentContainer);
-}
 
 function addNewLikedUser(commentRow, Array) {
     var newString = Array.join(', ');
     commentRow.setAttribute('data-likedBy', newString);
-   // console.log("Here it's set ******************", commentRow);
+    // console.log("Here it's set ******************", commentRow);
 }
 
 export function addListenerToLike(collection, action, element) {
@@ -289,9 +269,10 @@ export function addListenerToLike(collection, action, element) {
 
                     const countDislike = parseInt(downDiv.textContent.trim()) || 0;
 
+                    console.log("id: ", id);
                     updateLike(id, countLike + 1, countDislike, likedByArray, dislikedByArray, element)
                     addNewLikedUser(collection[i], likedByArray)
-                    if (element === 'comment') updateCommentsPost(collection[i]);
+
                 }
 
             } else {
@@ -306,7 +287,6 @@ export function addListenerToLike(collection, action, element) {
 
                 updateLike(id, countLike - 1, countDislike, likedByArray, dislikedByArray, element)
                 addNewLikedUser(collection[i], likedByArray)
-                if (element === 'comment') updateCommentsPost(collection[i]);
             }
         });
 
@@ -346,7 +326,7 @@ export function addListenerToDislike(collection, action, element) {
                     updateLike(id, countLike, countDislike + 1, likedByArray, dislikedByArray, element)
 
                     addNewLikedUser(collection[i], dislikedByArray)
-                    if (element === 'comment') updateCommentsPost(collection[i]);
+
                 }
             } else {
                 dislikedByArray = dislikedByArray.filter(name => name !== app.user.nickname);
@@ -360,7 +340,6 @@ export function addListenerToDislike(collection, action, element) {
                 updateLike(id, countLike, countDislike - 1, likedByArray, dislikedByArray, element)
 
                 addNewLikedUser(collection[i], dislikedByArray);
-                if (element === 'comment') updateCommentsPost(collection[i]);
             }
         });
 
@@ -473,14 +452,10 @@ export const homePage = `<div id="home">
                 <span id="comment-post-text"></span>
             </div>
         </div>
-
-        <div id="comments-zone"></div>
-
+        
         <form id="createCommentForm">
 
-            <hr>
-
-            <label for="inputCommentContent"><b>Description:</b></label>
+            <label for="inputCommentContent"><b>New comment:</b></label>
             <input type="text" id="inputCommentContent" placeholder="Enter your comment here" name="content">
             <button type="submit" id="createCommentSubmitButton">SUBMIT</button>
 

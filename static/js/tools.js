@@ -97,10 +97,23 @@ export function onMessage(event) {
 async function updateLastComment(jsonData) {
     const comment = Comment.fromObject(JSON.parse(jsonData))
 
+    console.log('comment: ', comment);
+
     const post = document.getElementById(`${comment.postId}`)
     const commentContainer = post.getElementsByClassName('commentContainer')[0]
 
     commentContainer.insertAdjacentHTML('afterbegin', comment.getHtml())
+
+    const commentHTML = document.getElementById(`${comment.id}-comment`)
+    const commentRow = commentHTML.getElementsByClassName('commentRow')
+
+    if (commentRow.length === 0) return;
+
+    initThumbs(commentRow, app.user.nickname)
+
+    addListenerToLike(commentRow, 'click', 'comment')
+
+    addListenerToDislike(commentRow, 'click', 'comment')
 
     updateNbrComment(comment.postId)
 }

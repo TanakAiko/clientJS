@@ -629,7 +629,9 @@ legend {
 }
 
 .comments{
-  border: 1px solid var(--dark-green);
+  border: 2px solid var(--dark-green);
+  margin-bottom: var(--std-space);
+  border-radius: var(--std-space);
 }
 
 
