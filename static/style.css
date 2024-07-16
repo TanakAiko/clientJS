@@ -644,10 +644,94 @@ legend {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.comments{
+.comments {
   border: 2px solid var(--dark-green);
   margin-bottom: var(--std-space);
   border-radius: var(--std-space);
+}
+
+#Messages {
+  width: 100%;
+  height: 46vh;
+  border: 2px solid var(--dark-green);
+  border-radius: 10px;
+  margin: 40px 0;
+  display: none;
+}
+
+#MessageBlock {
+  overflow-y: auto;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 3px;
+}
+
+.messageForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.messageForm input {
+  background-color: var(--light-grey);
+  border-radius: 10px;
+}
+
+.receive {
+  align-self: flex-start;
+  /* border: 2px solid var(--dark-green); */
+  background-color: var(--black);
+  color: var(--white);
+  border-radius: 10px 10px 10px 0;
+  padding: 8px;
+  max-width: 60%;
+}
+
+.send {
+  align-self: flex-end;
+  border: 2px solid var(--dark-green);
+  background-color: var(--dark-green);
+  color: var(--white);
+  border-radius: 10px 10px 0 10px;
+  padding: 8px;
+  max-width: 60%;
+}
+
+.receive p,
+.send p {
+  margin: 0;
+  font-size: 15px;
+  padding: 2px;
+}
+
+.User-view {
+  overflow-y: auto;
+  height: 218px;
+  border: 2px solid var(--dark-green);
+  border-radius: 10px;
+  width: 100%;
+  
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.User-view::-webkit-scrollbar {
+  width: 0;
+  /* Remove scrollbar space */
+  background: transparent;
+  /* Optional: just make scrollbar invisible */
+}
+
+.User-view::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.chat-content {
+  padding: 5px;
 }
 
 

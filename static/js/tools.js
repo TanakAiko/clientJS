@@ -130,7 +130,7 @@ function setAllUser(jsonData, neww) {
         newContent += userBlockU.getHtml()
     }
     
-    const allUserDiv = document.getElementById('allUser')
+    const allUserDiv = document.getElementById('User-view')
     allUserDiv.innerHTML =  newContent
 }
 
