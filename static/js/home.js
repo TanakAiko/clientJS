@@ -348,194 +348,176 @@ export function addListenerToDislike(collection, action, element) {
 
 export const homePage = `<div id="home">
 
-<div id="createPostModal" class="modal">
-    <div class="createPost">
-        <form id="createPostForm">
-            <div class="containerFormCreatePost">
-                <h1 id="createPostTitle">Create a Post</h1>
-                <hr>
+    <div id="createPostModal" class="modal">
+        <div class="createPost">
+            <form id="createPostForm">
+                <div class="containerFormCreatePost">
+                    <h1 id="createPostTitle">Create a Post</h1>
+                    <hr>
 
-                <label for="psw"><b>Description:</b></label>
-                <input type="text" placeholder="Enter Description" name="content" id="psw" required>
+                    <label for="psw"><b>Description:</b></label>
+                    <input type="text" placeholder="Enter Description" name="content" id="psw" required>
 
 
-                <div class="categorieCreatePost">
-                    <fieldset>
-                        <legend>Choose categories</legend>
-                        <div class="createPostCheckboxContainer">
-                            <label>
-                                <input type="checkbox" name="categorie" value="Anime">
-                                Anime
-                            </label>
-                            <label>
-                                <input type="checkbox" name="categorie" value="Manga">
-                                Manga
-                            </label>
-                            <label>
-                                <input type="checkbox" name="categorie" value="Politique">
-                                Politique
-                            </label>
-                            <label>
-                                <input type="checkbox" name="categorie" value="Sport">
-                                Sport
-                            </label>
-                            <label>
-                                <input type="checkbox" name="categorie" value="Science">
-                                Science
-                            </label>
-                            <label>
-                                <input type="checkbox" name="categorie" value="Culture">
-                                Culture
-                            </label>
-                            <label>
-                                <input type="checkbox" name="categorie" value="Gaming">
-                                Gaming
-                            </label>
-                        </div>
-                    </fieldset>
-                    <p id="categorieError" style="color:red; display:none;">Please select at least one
-                        category.</p>
+                    <div class="categorieCreatePost">
+                        <fieldset>
+                            <legend>Choose categories</legend>
+                            <div class="createPostCheckboxContainer">
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Anime">
+                                    Anime
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Manga">
+                                    Manga
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Politique">
+                                    Politique
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Sport">
+                                    Sport
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Science">
+                                    Science
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Culture">
+                                    Culture
+                                </label>
+                                <label>
+                                    <input type="checkbox" name="categorie" value="Gaming">
+                                    Gaming
+                                </label>
+                            </div>
+                        </fieldset>
+                        <p id="categorieError" style="color:red; display:none;">Please select at least one
+                            category.</p>
+                    </div>
+
+                    <div class="fileCreatePost">
+                        <label for="file-upload"><b>Choose a file:</b></label>
+                        <input type="file" name="img" id="file" aria-label="File browser example">
+                        <span class="file-custom"></span>
+                    </div>
+
+                    <button type="submit" id="createPostSubmitButton">SUBMIT</button>
                 </div>
-
-                <div class="fileCreatePost">
-                    <label for="file-upload"><b>Choose a file:</b></label>
-                    <input type="file" name="img" id="file" aria-label="File browser example">
-                    <span class="file-custom"></span>
-                </div>
-
-                <button type="submit" id="createPostSubmitButton">SUBMIT</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
-<div id="notifModal" class="modal">
-    <div class="notifBlock">
-        <div class="containerFormNotif">
-            <h1 id="notifTitle">Notif Page</h1>
-            <hr id="hrNotif">
-            <div class="allNotif">
-                <div class="notifInfo">
-                    Vous avez reçu un message de JELEE!
-                </div>
-                <div class="notifInfo">
-                    Vous avez reçu un message de JELEE!
-                </div>
-                <div class="notifInfo">
-                    Vous avez reçu un message de JELEE!
-                </div>
-                <div class="notifInfo">
-                    Vous avez reçu un message de JELEE!
-                </div>
-                <div class="notifInfo">
-                    Vous avez reçu un message de JELEE!
-                </div>
-                <div class="notifInfo">
-                    Vous avez reçu un message de JELEE!
+    <div id="notifModal" class="modal">
+        <div class="notifBlock">
+            <div class="containerFormNotif">
+                <h1 id="notifTitle">Notif Page</h1>
+                <hr id="hrNotif">
+                <div class="allNotif">
+                    <div class="notifInfo">
+                        Vous avez reçu un message de JELEE!
+                    </div>
+                    <div class="notifInfo">
+                        Vous avez reçu un message de JELEE!
+                    </div>
+                    <div class="notifInfo">
+                        Vous avez reçu un message de JELEE!
+                    </div>
+                    <div class="notifInfo">
+                        Vous avez reçu un message de JELEE!
+                    </div>
+                    <div class="notifInfo">
+                        Vous avez reçu un message de JELEE!
+                    </div>
+                    <div class="notifInfo">
+                        Vous avez reçu un message de JELEE!
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="onePostModal" class="modal">
-    <div class="OnePostBlock">
+    <div id="onePostModal" class="modal">
+        <div class="OnePostBlock">
 
-        <div id="post-zone">
-            <div id="comment-post-image-zone">
-                <img id="comment-post-image" src="" alt="">
-            </div>
-            <div id="comment-post-content">
-                <span id="comment-post-author"></span>
-                <span id="comment-post-date"></span>
-                <span id="comment-post-categories"></span>
-                <span id="comment-post-text"></span>
-            </div>
-        </div>
-        
-        <form id="createCommentForm">
-
-            <label for="inputCommentContent"><b>New comment:</b></label>
-            <input type="text" id="inputCommentContent" placeholder="Enter your comment here" name="content">
-            <button type="submit" id="createCommentSubmitButton">SUBMIT</button>
-
-        </form>
-    </div>
-</div>
-
-<div id="chatModal" class="modal">
-    <div class="chat">
-        <form id="chatForm">
-            <div class="containerChatForm">
-                <h1 id="createPostTitle">Chat Page</h1>
-                <hr>
-                <div class="chatStuff">
-                    <div class="oldMessage">Here old message</div>
-                    <input type="text" name="messageField" id="messageField">
-                    <img src="./static/images/send.svg">
+            <div id="post-zone">
+                <div id="comment-post-image-zone">
+                    <img id="comment-post-image" src="" alt="">
+                </div>
+                <div id="comment-post-content">
+                    <span id="comment-post-author"></span>
+                    <span id="comment-post-date"></span>
+                    <span id="comment-post-categories"></span>
+                    <span id="comment-post-text"></span>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
 
-<nav>
-    <div class="nav-left">
-        <h1 id="titleHome">Forum</h&>
-    </div>
-    <div class="nav-right">
-        <ul>
-            <li><img class="shrink" src="./static/images/notification.svg" id="notif"></li>
-            <li><img class="shrink" src="./static/images/log-out.svg" id="logoutButton"></li>
-        </ul>
-    </div>
-</nav>
+            <form id="createCommentForm">
 
-<div class="container">
+                <label for="inputCommentContent"><b>New comment:</b></label>
+                <input type="text" id="inputCommentContent" placeholder="Enter your comment here" name="content">
+                <button type="submit" id="createCommentSubmitButton">SUBMIT</button>
 
-    <div class="left-sidebar">
-        <div id="profile">
-            <img id="profilePic" src="./static/images/user-alt.svg">
-            <p id="profileName"></p>
-        </div>
-        <button id="createPostButton">Create post</button>
-    </div>
-
-
-    <div class="main-content"></div>
-
-
-    <div class="right-sidebar">
-
-        <div class="chat-content">
-
-            <div class="sidebarTitle">
-                <h4>Messages</h4>
-            </div>
-
-            <div class="onlineList shrink user">
-                <div class="online">
-                    <img src="./static/images/user-alt.svg">
-                </div>
-                <p>Tanaka Aiko</p>
-            </div>
-
-            <div class="onlineList shrink user">
-                <div class="online">
-                    <img src="./static/images/user-alt.svg">
-                </div>
-                <p>JELEE</p>
-            </div>
-
-            <div class="onlineList shrink user">
-                <div class="online">
-                    <img src="./static/images/user-alt.svg">
-                </div>
-                <p>Uchiwa Itachi</p>
-            </div>
-
+            </form>
         </div>
     </div>
-</div>
+
+    <div id="chatModal" class="modal">
+        <div class="chat">
+            <form id="chatForm">
+                <div class="containerChatForm">
+                    <h1 id="createPostTitle">Chat Page</h1>
+                    <hr>
+                    <div class="chatStuff">
+                        <div class="oldMessage">Here old message</div>
+                        <input type="text" name="messageField" id="messageField">
+                        <img src="./static/images/send.svg">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-left">
+            <h1 id="titleHome">Forum</h&>
+        </div>
+        <div class="nav-right">
+            <ul>
+                <li><img class="shrink" src="./static/images/notification.svg" id="notif"></li>
+                <li><img class="shrink" src="./static/images/log-out.svg" id="logoutButton"></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="left-sidebar">
+            <div id="profile">
+                <img id="profilePic" src="./static/images/user-alt.svg">
+                <p id="profileName"></p>
+            </div>
+            <button id="createPostButton">Create post</button>
+        </div>
+
+
+        <div class="main-content"></div>
+
+
+        <div class="right-sidebar">
+
+            <div class="chat-content">
+
+                <div class="sidebarTitle">
+                    <h4>Messages</h4>
+                </div>
+
+                <div id="allUser"></div>
+
+
+            </div>
+        </div>
+    </div>
 
 </div>`

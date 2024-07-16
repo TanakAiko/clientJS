@@ -6,11 +6,11 @@
                 <div class="containerFormCreatePost">
                     <h1 id="createPostTitle">Create a Post</h1>
                     <hr>
-    
+
                     <label for="psw"><b>Description:</b></label>
                     <input type="text" placeholder="Enter Description" name="content" id="psw" required>
-    
-    
+
+
                     <div class="categorieCreatePost">
                         <fieldset>
                             <legend>Choose categories</legend>
@@ -48,19 +48,19 @@
                         <p id="categorieError" style="color:red; display:none;">Please select at least one
                             category.</p>
                     </div>
-    
+
                     <div class="fileCreatePost">
                         <label for="file-upload"><b>Choose a file:</b></label>
                         <input type="file" name="img" id="file" aria-label="File browser example">
                         <span class="file-custom"></span>
                     </div>
-    
+
                     <button type="submit" id="createPostSubmitButton">SUBMIT</button>
                 </div>
             </form>
         </div>
     </div>
-    
+
     <div id="notifModal" class="modal">
         <div class="notifBlock">
             <div class="containerFormNotif">
@@ -89,10 +89,10 @@
             </div>
         </div>
     </div>
-    
+
     <div id="onePostModal" class="modal">
         <div class="OnePostBlock">
-    
+
             <div id="post-zone">
                 <div id="comment-post-image-zone">
                     <img id="comment-post-image" src="" alt="">
@@ -104,22 +104,17 @@
                     <span id="comment-post-text"></span>
                 </div>
             </div>
-    
-            <div id="comments-zone"></div>
-    
+
             <form id="createCommentForm">
-    
-                <h1 id="createPostTitle">Create a Comment</h1>
-                <hr>
-    
-                <label for="inputCommentContent"><b>Description:</b></label>
+
+                <label for="inputCommentContent"><b>New comment:</b></label>
                 <input type="text" id="inputCommentContent" placeholder="Enter your comment here" name="content">
                 <button type="submit" id="createCommentSubmitButton">SUBMIT</button>
-    
+
             </form>
         </div>
     </div>
-    
+
     <div id="chatModal" class="modal">
         <div class="chat">
             <form id="chatForm">
@@ -135,7 +130,7 @@
             </form>
         </div>
     </div>
-    
+
     <nav>
         <div class="nav-left">
             <h1 id="titleHome">Forum</h&>
@@ -147,9 +142,9 @@
             </ul>
         </div>
     </nav>
-    
+
     <div class="container">
-    
+
         <div class="left-sidebar">
             <div id="profile">
                 <img id="profilePic" src="./static/images/user-alt.svg">
@@ -157,42 +152,24 @@
             </div>
             <button id="createPostButton">Create post</button>
         </div>
-    
-    
+
+
         <div class="main-content"></div>
-    
-    
+
+
         <div class="right-sidebar">
-    
+
             <div class="chat-content">
-    
+
                 <div class="sidebarTitle">
                     <h4>Messages</h4>
                 </div>
-    
-                <div class="onlineList shrink user">
-                    <div class="online">
-                        <img src="./static/images/user-alt.svg">
-                    </div>
-                    <p>Tanaka Aiko</p>
-                </div>
-    
-                <div class="onlineList shrink user">
-                    <div class="online">
-                        <img src="./static/images/user-alt.svg">
-                    </div>
-                    <p>JELEE</p>
-                </div>
-    
-                <div class="onlineList shrink user">
-                    <div class="online">
-                        <img src="./static/images/user-alt.svg">
-                    </div>
-                    <p>Uchiwa Itachi</p>
-                </div>
-    
+
+                <div id="allUser"></div>
+
+
             </div>
         </div>
     </div>
-    
-    </div>
+
+</div>

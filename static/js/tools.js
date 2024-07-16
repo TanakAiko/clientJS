@@ -2,6 +2,7 @@ import { setLoginRegisterPage } from "./setPage.js";
 import { app, getwayURL } from "./constants.js";
 import { Post } from "./post.js";
 import { Comment } from "./comment.js";
+import { UserBlock } from "./userBlock.js";
 import { addListenerToDislike, addListenerToLike, addListenerToComment } from "./home.js";
 
 export function onMessage(event) {
@@ -89,9 +90,48 @@ export function onMessage(event) {
             sendNewLikes(msg.data, 'comment')
             break
 
+        case 'getAllUser':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            setAllUser(msg.data, 'yes')
+            break
+        
+        case 'sendNewUsertoAll':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            setAllUser(msg.data, 'non')
+            break
+
         default:
             console.log('Unknown action:', msg.action);
     }
+}
+
+function setAllUser(jsonData, neww) {
+    console.log("neww: ", neww);
+    if (neww === 'yes') app.ws.send(JSON.stringify({ action: "sendNewUsertoAll" }));
+
+    var newContent = ''
+    var tabUser = JSON.parse(jsonData)
+
+    console.log("tabUser: ", tabUser);
+
+    if (!tabUser) return
+    
+    console.log("app.user: ", app.user);
+
+    for (const user of tabUser) {
+        const userBlockU = UserBlock.fromObject(user)
+        if (userBlockU.nickname === app.user.nickname) continue;
+        newContent += userBlockU.getHtml()
+    }
+    
+    const allUserDiv = document.getElementById('allUser')
+    allUserDiv.innerHTML =  newContent
 }
 
 async function updateLastComment(jsonData) {
@@ -359,6 +399,7 @@ export function onOpen() {
 }
 
 export function onClose() {
+    app.ws.send(JSON.stringify({ action: "removeMyself" }));
     console.log("Connection closed !!!");
 }
 

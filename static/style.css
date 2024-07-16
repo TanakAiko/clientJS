@@ -372,6 +372,22 @@ body {
   right: 0;
 }
 
+.offline {
+  position: relative;
+}
+
+.offline::after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  background: var(--light-grey);
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 /* ************************************************************************** */
 
 #logoutButton {
