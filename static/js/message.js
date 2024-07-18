@@ -12,13 +12,16 @@ export class Message {
 
     getHtml(nicknameSender) {
         return `
-        <div class="${this.status}" id="${this.messageID}-message" data-idSender="${this.senderID}" data-idReceiver="${this.receiverID}" data-statusReceived="${this.statusReceived}" data-statusRead="${this.statusRead}">
-            <div>
-                <p>${nicknameSender}</p>
-                <span>${this.createAT}</span>
+            <div class="${this.status}" id="${this.messageID}-message" data-idSender="${this.senderID}" data-idReceiver="${this.receiverID}" data-statusReceived="${this.statusReceived}" data-statusRead="${this.statusRead}">
+                <div class="user-prfile">
+                    <img src="./static/images/user-alt.svg">
+                    <div>
+                        <p>${nicknameSender}</p>
+                        <span>${this.createAT}</span>
+                    </div>
+                </div>
+                <p>${this.content}</p>
             </div>
-            <p>${this.content}</p>
-         </div>
         `
     }
 

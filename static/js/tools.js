@@ -129,6 +129,16 @@ export function onMessage(event) {
     }
 }
 
+function displayCreatedMessage(jsonData) {
+    var message = JSON.parse(jsonData)
+    var newMsg = Message.fromObject(message)
+    newMsg.status = 'send'
+    console.log('message received: ', newMsg);
+
+    const messageBlock = document.getElementById('MessageBlock')
+    messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(app.user.nickname));
+}
+
 function handleNewMessage(jsonData) {
     var message = JSON.parse(jsonData)
     var newMsg = Message.fromObject(message)

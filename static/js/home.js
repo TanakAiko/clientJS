@@ -475,26 +475,7 @@ export const homePage = `<div id="home">
             <div class="containerFormNotif">
                 <h1 id="notifTitle">Notif Page</h1>
                 <hr id="hrNotif">
-                <div id="allNotif">
-                    <div class="notifInfo">
-                        Vous avez reçu un message de JELEE!
-                    </div>
-                    <div class="notifInfo">
-                        Vous avez reçu un message de JELEE!
-                    </div>
-                    <div class="notifInfo">
-                        Vous avez reçu un message de JELEE!
-                    </div>
-                    <div class="notifInfo">
-                        Vous avez reçu un message de JELEE!
-                    </div>
-                    <div class="notifInfo">
-                        Vous avez reçu un message de JELEE!
-                    </div>
-                    <div class="notifInfo">
-                        Vous avez reçu un message de JELEE!
-                    </div>
-                </div>
+                <div id="allNotif"></div>
             </div>
         </div>
     </div>
@@ -546,7 +527,9 @@ export const homePage = `<div id="home">
         </div>
         <div class="nav-right">
             <ul>
-                <li><img class="shrink" src="./static/images/notification.svg" id="notif"></li>
+                <div id="notifDiv">
+                    <li><img class="shrink" src="./static/images/notification.svg" id="notif"></li>
+                </div>
                 <li><img class="shrink" src="./static/images/log-out.svg" id="logoutButton"></li>
             </ul>
         </div>
