@@ -388,6 +388,22 @@ body {
   right: 0;
 }
 
+.newNotif {
+  position: relative;
+}
+
+.newNotif::after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  background: red;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 /* ************************************************************************** */
 
 button {
@@ -521,27 +537,27 @@ legend {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.allNotif {
+#allNotif {
   overflow-y: auto;
   height: 200px;
 
 }
 
-.allNotif::-webkit-scrollbar {
+#allNotif::-webkit-scrollbar {
   width: 0;
   /* Remove scrollbar space */
   background: transparent;
   /* Optional: just make scrollbar invisible */
 }
 
-.allNotif {
+#allNotif {
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
 }
 
-.allNotif::-webkit-scrollbar-thumb {
+#allNotif::-webkit-scrollbar-thumb {
   background: transparent;
 }
 

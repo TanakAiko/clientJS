@@ -3,6 +3,8 @@ import { app, getwayURL } from "./constants.js";
 import { Post } from "./post.js";
 import { Comment } from "./comment.js";
 import { UserBlock } from "./userBlock.js";
+import { Message } from "./message.js";
+import { Notif } from "./notif.js";
 import { addListenerToDislike, addListenerToLike, addListenerToComment, addListenerToUser } from "./home.js";
 
 export function onMessage(event) {
@@ -111,7 +113,7 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            console.log('Server replied (', msg.action, '): ', msg.data);
+            displayCreatedMessage()
             break
 
         case 'newMessage':
@@ -119,12 +121,41 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            console.log('Server replied (', msg.action, '): ', msg.data);
+            handleNewMessage(msg.data);
             break
 
         default:
             console.log('Unknown action:', msg.action);
     }
+}
+
+function handleNewMessage(jsonData) {
+    var message = JSON.parse(jsonData)
+    var newMsg = Message.fromObject(message)
+    newMsg.status = 'receive'
+    console.log('message received: ', newMsg);
+
+    const divMessage = document.getElementById('Messages')
+    const idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
+    const nicknameUserToTalk = document.getElementById(`${newMsg.senderID}-user`).getElementsByTagName('p')[0].textContent
+
+    if (idTalkTo === newMsg.senderID) {
+        const messageBlock = document.getElementById('MessageBlock')
+        messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(nicknameUserToTalk));
+    } else {
+        sendNotif(nicknameUserToTalk);
+    }
+}
+
+function sendNotif(nicknameUserToTalk) {
+    const notifBlock = document.getElementById('allNotif')
+    const iconNotifDiv = document.getElementById('notifDiv')
+
+    const contentNotif = `New message from ${nicknameUserToTalk}`
+    var notif = new Notif(contentNotif)
+
+    notifBlock.insertAdjacentHTML('afterbegin', notif.getHtml())
+    iconNotifDiv.classList.add('newNotif')
 }
 
 function setAllUser(jsonData, neww) {

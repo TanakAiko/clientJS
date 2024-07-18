@@ -7,7 +7,7 @@ export class UserBlock {
 
     getHtml() {
         return `
-        <div class="onlineList shrink user" data-userId="${this.userId}">
+            <div id="${this.userId}-user" class="onlineList shrink user" data-userId="${this.userId}">
                 <div class="${this.status}">
                     <img src="./static/images/user-alt.svg">
                 </div>

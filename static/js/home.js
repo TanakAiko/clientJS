@@ -35,7 +35,10 @@ export async function setHome() {
     const notif = document.getElementById('notif');
     notif.addEventListener("click", (event) => {
         event.preventDefault();
+        const iconNotifDiv = document.getElementById('notifDiv')
+
         openNotifModal();
+        iconNotifDiv.classList.remove('newNotif')
     });
 
 
@@ -357,6 +360,7 @@ export function addListenerToUser() {
         users[i].addEventListener('click', (event) => {
             if (divMessage.style.display === 'block') {
                 divMessage.style.display = 'none'
+                divMessage.setAttribute('data-idTalkTo', 0)
             } else {
                 const userId = parseInt(users[i].getAttribute('data-userId'))
                 const userNickname = users[i].getElementsByTagName('p')[0].textContent
@@ -471,7 +475,7 @@ export const homePage = `<div id="home">
             <div class="containerFormNotif">
                 <h1 id="notifTitle">Notif Page</h1>
                 <hr id="hrNotif">
-                <div class="allNotif">
+                <div id="allNotif">
                     <div class="notifInfo">
                         Vous avez reçu un message de JELEE!
                     </div>
