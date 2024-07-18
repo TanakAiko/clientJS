@@ -167,7 +167,11 @@
 
                 <div id="User-view"></div>
 
-                <div id="Messages">
+                <div id="Messages" data-talkTo="" data-idTalkTo="">
+
+                    <div id="headMessages">
+                        <p></p>
+                    </div>
 
                     <div id="MessageBlock">
                         <div class="receive">
@@ -197,10 +201,12 @@
 
                     <div class="sendMessage">
 
-                        <form id="formSendMessage" action="" class="messageForm">
+                        <form id="formSendMessage" class="messageForm">
 
-                            <input type="text" placeholder="    send message">
-                            <div> <img src="./static/images/send.svg" alt=""></div>
+                            <input name="content" type="text" placeholder="    send message">
+                            <div> 
+                                <button id="sendMessageButton">Send</button>
+                            </div>
 
                         </form>
 

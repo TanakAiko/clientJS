@@ -53,6 +53,9 @@ export async function setHome() {
 
         listenSubmitPost();
         listenSubmitComment();
+        listenSubmitMessage();
+        //addListenerToSendMessageButton();
+
 
         app.ws.send(JSON.stringify({ action: "getAllPost" }));
     }
@@ -227,7 +230,6 @@ export function addListenerToComment(collection, action) {
     }
 }
 
-
 function addNewLikedUser(commentRow, Array) {
     var newString = Array.join(', ');
     commentRow.setAttribute('data-likedBy', newString);
@@ -345,6 +347,61 @@ export function addListenerToDislike(collection, action, element) {
 
     }
 }
+
+export function addListenerToUser() {
+    const users = document.getElementsByClassName('user')
+    const divMessage = document.getElementById('Messages')
+    const headMessages = document.getElementById('headMessages')
+
+    for (let i = 0; i < users.length; i++) {
+        users[i].addEventListener('click', (event) => {
+            if (divMessage.style.display === 'block') {
+                divMessage.style.display = 'none'
+            } else {
+                const userId = parseInt(users[i].getAttribute('data-userId'))
+                const userNickname = users[i].getElementsByTagName('p')[0].textContent
+
+                divMessage.setAttribute('data-talkTo', userNickname);
+                divMessage.setAttribute('data-idTalkTo', userId)
+
+                headMessages.getElementsByTagName('p')[0].textContent = userNickname
+
+                divMessage.style.display = 'block'
+            }
+        })
+
+    }
+}
+
+/* function addListenerToSendMessageButton() {
+    const sendMessageButton = document.getElementById('sendMessageButton')
+    const formSendMessage = document.getElementById('formSendMessage')
+
+    sendMessageButton.addEventListener('click', (event) => {
+        console.log("addListener to sendMessageButton !!!");
+        event.preventDefault();
+        formSendMessage.submit();
+    })
+} */
+
+function listenSubmitMessage() {
+    const formSendMessage = document.getElementById('formSendMessage')
+    formSendMessage.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const divMessage = document.getElementById('Messages')
+        const receiverId = parseInt(divMessage.getAttribute('data-idTalkTo'))
+
+        const data = getDataCreateCommentForm(formSendMessage)
+        data.senderID = app.user.userId
+        data.receiverID = receiverId
+
+        app.ws.send(JSON.stringify({ action: "messageCreate", data: JSON.stringify(data) }));
+
+        formSendMessage.reset();
+    })
+}
+
 
 export const homePage = `<div id="home">
 
@@ -515,7 +572,11 @@ export const homePage = `<div id="home">
 
                 <div id="User-view"></div>
 
-                <div id="Messages">
+                <div id="Messages" data-talkTo="" data-idTalkTo="">
+
+                    <div id="headMessages">
+                        <p></p>
+                    </div>
 
                     <div id="MessageBlock">
                         <div class="receive">
@@ -545,10 +606,12 @@ export const homePage = `<div id="home">
 
                     <div class="sendMessage">
 
-                        <form id="formSendMessage" action="" class="messageForm">
+                        <form id="formSendMessage" class="messageForm">
 
-                            <input type="text" placeholder="    send message">
-                            <div> <img src="./static/images/send.svg" alt=""></div>
+                            <input name="content" type="text" placeholder="    send message">
+                            <div> 
+                                <button id="sendMessageButton">Send</button>
+                            </div>
 
                         </form>
 

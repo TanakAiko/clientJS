@@ -3,7 +3,7 @@ import { app, getwayURL } from "./constants.js";
 import { Post } from "./post.js";
 import { Comment } from "./comment.js";
 import { UserBlock } from "./userBlock.js";
-import { addListenerToDislike, addListenerToLike, addListenerToComment } from "./home.js";
+import { addListenerToDislike, addListenerToLike, addListenerToComment, addListenerToUser } from "./home.js";
 
 export function onMessage(event) {
     const msg = JSON.parse(event.data);
@@ -97,7 +97,7 @@ export function onMessage(event) {
             }
             setAllUser(msg.data, 'yes')
             break
-        
+
         case 'sendNewUsertoAll':
             if (msg.data === "error") {
                 console.log('Server replied (', msg.action, '): ', msg.data);
@@ -106,13 +106,28 @@ export function onMessage(event) {
             setAllUser(msg.data, 'non')
             break
 
+        case 'messageCreate':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            console.log('Server replied (', msg.action, '): ', msg.data);
+            break
+
+        case 'newMessage':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            console.log('Server replied (', msg.action, '): ', msg.data);
+            break
+
         default:
             console.log('Unknown action:', msg.action);
     }
 }
 
 function setAllUser(jsonData, neww) {
-    console.log("neww: ", neww);
     if (neww === 'yes') app.ws.send(JSON.stringify({ action: "sendNewUsertoAll" }));
 
     var newContent = ''
@@ -121,7 +136,7 @@ function setAllUser(jsonData, neww) {
     console.log("tabUser: ", tabUser);
 
     if (!tabUser) return
-    
+
     console.log("app.user: ", app.user);
 
     for (const user of tabUser) {
@@ -129,9 +144,11 @@ function setAllUser(jsonData, neww) {
         if (userBlockU.nickname === app.user.nickname) continue;
         newContent += userBlockU.getHtml()
     }
-    
+
     const allUserDiv = document.getElementById('User-view')
-    allUserDiv.innerHTML =  newContent
+    allUserDiv.innerHTML = newContent
+
+    addListenerToUser()
 }
 
 async function updateLastComment(jsonData) {
@@ -424,7 +441,6 @@ export async function testSession(sessionId) {
             credentials: 'include',
         };
         const response = await fetch(urlAuthorized, requestOptions)
-        console.log("response.status: ", response.status)
 
         /* if (!response.ok) {
             throw new Error(`HTTP error status: ${response.status}`);
