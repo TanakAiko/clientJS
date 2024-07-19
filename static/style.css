@@ -515,9 +515,18 @@ legend {
   border-radius: 10px;
   align-items: center;
   height: 40px;
-  justify-content: space-evenly;
-  flex-direction: row;
+  justify-content: center;
+  flex-direction: column;
   margin-bottom: 10px;
+}
+
+.notifInfo span {
+  font-size: 12px;
+}
+
+.notifInfo p {
+  font-size: 20px;
+  margin-top: 0px;
 }
 
 #notifTitle {
@@ -772,7 +781,7 @@ legend {
   padding: 5px;
 }
 
-#headMessages{
+#headMessages {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -780,7 +789,7 @@ legend {
   background-color: var(--dark-green);
 }
 
-#headMessages p{
+#headMessages p {
   font-size: 28px;
   margin-top: 0px;
   color: var(--white);

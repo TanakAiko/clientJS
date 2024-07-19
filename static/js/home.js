@@ -370,23 +370,14 @@ export function addListenerToUser() {
 
                 headMessages.getElementsByTagName('p')[0].textContent = userNickname
 
+                app.ws.send(JSON.stringify({ action: "messageGets" }));
+
                 divMessage.style.display = 'block'
             }
         })
 
     }
 }
-
-/* function addListenerToSendMessageButton() {
-    const sendMessageButton = document.getElementById('sendMessageButton')
-    const formSendMessage = document.getElementById('formSendMessage')
-
-    sendMessageButton.addEventListener('click', (event) => {
-        console.log("addListener to sendMessageButton !!!");
-        event.preventDefault();
-        formSendMessage.submit();
-    })
-} */
 
 function listenSubmitMessage() {
     const formSendMessage = document.getElementById('formSendMessage')

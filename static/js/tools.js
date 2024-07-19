@@ -124,16 +124,57 @@ export function onMessage(event) {
             handleNewMessage(msg.data);
             break
 
+        case 'messageGets':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            setChat(msg.data)
+            break
+
         default:
             console.log('Unknown action:', msg.action);
     }
+}
+
+function setChat(jsonData) {
+    let chats = new Array();
+    var newContent = ""
+    const divMessage = document.getElementById('Messages')
+    const idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
+
+    const tabMessage = JSON.parse(jsonData)
+    console.log('all message: ', tabMessage);
+
+    for (const message of tabMessage) {
+        var newMsg = Message.fromObject(message)
+        console.log('newMessage: ', newMsg);
+        
+        if (newMsg.senderID === app.user.userId && newMsg.receiverID === idTalkTo) {
+            newMsg.status = 'send'
+            newMsg.senderNickname = app.user.nickname
+            chats.push(newMsg)
+        } else if (newMsg.receiverID === app.user.userId && newMsg.senderID === idTalkTo) {
+            const nicknameUserToTalk = document.getElementById(`${newMsg.senderID}-user`).getElementsByTagName('p')[0].textContent
+            newMsg.senderNickname = nicknameUserToTalk
+            newMsg.status = 'receive'
+            chats.push(newMsg)
+        }
+    }
+
+    for (const message of chats) {
+        newContent += message.getHtml(message.senderNickname)
+    }
+
+    const messageBlock = document.getElementById('MessageBlock')
+    messageBlock.innerHTML = newContent
+    messageBlock.scrollTop = messageBlock.scrollHeight;
 }
 
 function displayCreatedMessage(jsonData) {
     var message = JSON.parse(jsonData)
     var newMsg = Message.fromObject(message)
     newMsg.status = 'send'
-    console.log('message received: ', newMsg);
 
     const messageBlock = document.getElementById('MessageBlock')
     messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(app.user.nickname));
@@ -164,7 +205,7 @@ function sendNotif(nicknameUserToTalk) {
     const iconNotifDiv = document.getElementById('notifDiv')
 
     const contentNotif = `New message from ${nicknameUserToTalk}`
-    var notif = new Notif(contentNotif)
+    var notif = new Notif(contentNotif, Date.now())
 
     notifBlock.insertAdjacentHTML('afterbegin', notif.getHtml())
     iconNotifDiv.classList.add('newNotif')
