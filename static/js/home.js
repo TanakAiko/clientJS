@@ -172,7 +172,6 @@ function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, acti
             dislikedBy: dislikedByArray
         }
 
-        // console.log('data to send to the server (POST) : ', data);
         app.ws.send(JSON.stringify({ action: "updatePostLike", data: JSON.stringify(data) }));
     } else if (action === 'comment') {
         const data = {
@@ -182,7 +181,6 @@ function updateLike(id, nbrLike, nbrDislike, likedByArray, dislikedByArray, acti
             likedBy: likedByArray,
             dislikedBy: dislikedByArray
         }
-        console.log('data to send to the server (COMMENT) : ', data);
         app.ws.send(JSON.stringify({ action: "updateCommentLike", data: JSON.stringify(data) }));
     }
 }

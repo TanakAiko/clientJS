@@ -132,8 +132,37 @@ export function onMessage(event) {
             setChat(msg.data)
             break
 
+        case 'messageStatusRead':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            console.log('Server replied (', msg.action, '): ', msg.data);
+            break
+
+        case 'isAllRead':
+            if (msg.data === "error") {
+                console.log('Server replied (', msg.action, '): ', msg.data);
+                return
+            }
+            handleUnreadMessage(msg.data)
+            break
+
         default:
             console.log('Unknown action:', msg.action);
+    }
+}
+
+function handleUnreadMessage(jsonData) {
+    const tabIdUser = JSON.parse(jsonData)
+    if (tabIdUser === null) return
+    for (const idTalkTo of tabIdUser) {
+        const userBlock = document.getElementById(`${idTalkTo}-user`)
+        userBlock.classList.add('unreadMess')
+
+        const nickname = userBlock.getElementsByTagName('p')[0].textContent
+
+        sendNotif(nickname)
     }
 }
 
@@ -149,7 +178,7 @@ function setChat(jsonData) {
     for (const message of tabMessage) {
         var newMsg = Message.fromObject(message)
         console.log('newMessage: ', newMsg);
-        
+
         if (newMsg.senderID === app.user.userId && newMsg.receiverID === idTalkTo) {
             newMsg.status = 'send'
             newMsg.senderNickname = app.user.nickname
@@ -159,6 +188,7 @@ function setChat(jsonData) {
             newMsg.senderNickname = nicknameUserToTalk
             newMsg.status = 'receive'
             chats.push(newMsg)
+            markRead(newMsg.messageID)
         }
     }
 
@@ -169,6 +199,16 @@ function setChat(jsonData) {
     const messageBlock = document.getElementById('MessageBlock')
     messageBlock.innerHTML = newContent
     messageBlock.scrollTop = messageBlock.scrollHeight;
+
+    const userBlock = document.getElementById(`${idTalkTo}-user`)
+    userBlock.classList.remove('unreadMess')
+}
+
+function markRead(id) {
+    const data = {
+        messageID: id
+    }
+    app.ws.send(JSON.stringify({ action: "messageStatusRead", data: JSON.stringify(data) }));
 }
 
 function displayCreatedMessage(jsonData) {
@@ -195,7 +235,10 @@ function handleNewMessage(jsonData) {
         const messageBlock = document.getElementById('MessageBlock')
         messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(nicknameUserToTalk));
         messageBlock.scrollTop = messageBlock.scrollHeight;
+        markRead(newMsg.messageID)
     } else {
+        const userBlock = document.getElementById(`${newMsg.senderID}-user`)
+        userBlock.classList.add('unreadMess')
         sendNotif(nicknameUserToTalk);
     }
 }

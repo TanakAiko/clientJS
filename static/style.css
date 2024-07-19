@@ -359,6 +359,23 @@ body {
   background-color: var(--light-grey);
 }
 
+.unreadMess {
+  position: relative;
+}
+
+.unreadMess::after {
+  content: "";
+  margin-top: 1.9rem;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  background: red;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .online {
   position: relative;
 }
