@@ -1,3 +1,5 @@
+    import { formatDate } from "./tools.js";
+
 export class Message {
     constructor(messageID, senderID, receiverID, content, statusReceived, statusRead, createAT, status){
         this.messageID = messageID
@@ -14,13 +16,13 @@ export class Message {
         return `
             <div class="${this.status}" id="${this.messageID}-message" data-idSender="${this.senderID}" data-idReceiver="${this.receiverID}" data-statusReceived="${this.statusReceived}" data-statusRead="${this.statusRead}">
                 <div class="user-prfile">
-                    <img src="./static/images/user-alt.svg">
+                    <img src="${this.status === "receive" ? "./static/images/user-alt-receive.svg" : "./static/images/user-alt-send.svg"}">
                     <div>
-                        <p>${nicknameSender}</p>
-                        <span>${this.createAT}</span>
+                        <p class="senderNickname">${nicknameSender}</p>
+                        <span>${formatDate(this.createAT)}</span>
                     </div>
                 </div>
-                <p>${this.content}</p>
+                <p class="msgContent">${this.content}</p>
             </div>
         `
     }

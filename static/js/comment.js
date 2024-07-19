@@ -1,3 +1,5 @@
+import { formatDate } from "./tools.js";
+
 export class Comment {
     constructor(id, postId, userId, nickname, likedBy, dislikedBy, content, nbrLike, nbrDislike, createAt) {
         this.id = id
@@ -18,7 +20,7 @@ export class Comment {
                         <img src="./static/images/user-alt.svg">
                         <div>
                             <p>${this.nickname}</p>
-                            <span>${this.createAt}</span>
+                            <span>${formatDate(this.createAt)}</span>
                         </div>
                     </div>
 

@@ -113,7 +113,7 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            displayCreatedMessage()
+            displayCreatedMessage(msg.data)
             break
 
         case 'newMessage':
@@ -137,6 +137,7 @@ function displayCreatedMessage(jsonData) {
 
     const messageBlock = document.getElementById('MessageBlock')
     messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(app.user.nickname));
+    messageBlock.scrollTop = messageBlock.scrollHeight;
 }
 
 function handleNewMessage(jsonData) {
@@ -152,6 +153,7 @@ function handleNewMessage(jsonData) {
     if (idTalkTo === newMsg.senderID) {
         const messageBlock = document.getElementById('MessageBlock')
         messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(nicknameUserToTalk));
+        messageBlock.scrollTop = messageBlock.scrollHeight;
     } else {
         sendNotif(nicknameUserToTalk);
     }
@@ -524,4 +526,10 @@ export async function getUserData(sessionId) {
 export function strToInt(str) {
     var num = Number(str)
     return parseInt(num, 10)
+}
+
+export function formatDate(dateString) {
+    let dateObject = new Date(dateString);
+    let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+    return dateObject.toLocaleDateString('en-US', options);
 }

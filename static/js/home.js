@@ -1,5 +1,5 @@
 import { app } from "./constants.js";
-import { getCookieValue, strToInt, initThumbs } from "./tools.js";
+import { getCookieValue, strToInt } from "./tools.js";
 
 export async function setHome() {
     const modalCreatePost = document.getElementById('createPostModal');
@@ -565,31 +565,7 @@ export const homePage = `<div id="home">
                         <p></p>
                     </div>
 
-                    <div id="MessageBlock">
-                        <div class="receive">
-                            <p>Bonjour</p>
-                        </div>
-
-                        <div class="send">
-                            <p>Bonjour! Comment tu vas?</p>
-                        </div>
-
-                        <div class="receive">
-                            <p>Je vais bien et toi?</p>
-                        </div>
-
-                        <div class="send">
-                            <p>Ça va aussi</p>
-                        </div>
-
-                        <div class="receive">
-                            <p>Et la famille?</p>
-                        </div>
-
-                        <div class="send">
-                            <p>On se porte bien</p>
-                        </div>
-                    </div>
+                    <div id="MessageBlock"></div>
 
                     <div class="sendMessage">
 

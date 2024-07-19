@@ -158,16 +158,19 @@ a:hover {
   font-size: 28px;
 }
 
-.onlineList .online img {
+.onlineList .online img,
+.onlineList .offline img {
   width: 60px;
 }
 
-.onlineList .online {
+.onlineList .online,
+.onlineList .offline {
   width: 60px;
   margin-right: 10px;
 }
 
-.onlineList .online::after {
+.onlineList .online::after,
+.onlineList .offline::after {
   top: 42px;
   bottom: 5px;
 }
@@ -692,29 +695,53 @@ legend {
 
 .receive {
   align-self: flex-start;
-  /* border: 2px solid var(--dark-green); */
+  border: 2px solid var(--dark-green);
   background-color: var(--black);
   color: var(--white);
-  border-radius: 10px 10px 10px 0;
+  border-radius: 15px 15px 15px 0;
   padding: 8px;
-  max-width: 60%;
+  width: fit-content;
+  height: fit-content;
+  max-width: 300px;
 }
 
 .send {
   align-self: flex-end;
-  border: 2px solid var(--dark-green);
+  border: 2px solid var(--black);
   background-color: var(--dark-green);
   color: var(--white);
-  border-radius: 10px 10px 0 10px;
+  border-radius: 15px 15px 0 15px;
   padding: 8px;
-  max-width: 60%;
+  width: fit-content;
+  height: fit-content;
+  max-width: 300px;
 }
 
 .receive p,
 .send p {
   margin: 0;
-  font-size: 15px;
   padding: 2px;
+}
+
+.receive span,
+.send span {
+  font-size: 11px;
+  color: var(--white);
+}
+
+.receive img,
+.send img {
+  width: 40px;
+}
+
+.receive .msgContent,
+.send .msgContent {
+  font-size: 22px;
+}
+
+.receive .senderNickname,
+.send .senderNickname {
+  font-size: 16px;
 }
 
 .User-view {
@@ -723,7 +750,7 @@ legend {
   border: 2px solid var(--dark-green);
   border-radius: 10px;
   width: 100%;
-  
+
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
@@ -743,6 +770,20 @@ legend {
 
 .chat-content {
   padding: 5px;
+}
+
+#headMessages{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: var(--dark-green);
+}
+
+#headMessages p{
+  font-size: 28px;
+  margin-top: 0px;
+  color: var(--white);
 }
 
 
