@@ -7,7 +7,7 @@ export async function setLoginRegister() {
     registerFormID?.addEventListener("submit", async (event) => {
         event.preventDefault()
         const urlRegister = `${getwayURL}/register`
-        const data = getDataForm(registerFormID)
+        const data = getDataForm(registerFormID, 'register')
         if (data === 'error') {
             return
         }
@@ -106,8 +106,10 @@ export const loginRegisterPage = `<div id="loginRegister">
         <!-- Login Form -->
         <div id="loginForm" class="form-container">
             <h2>Login</h2>
-            <p id="loginError" style="color:red; display:none;">Username or Password incorrect.</p>
+
+            
             <form id="loginFormID">
+                <p id="loginError" style="color:red; display:none;">Username or Password incorrect.</p>
                 <div class="form-group">
                     <label for="email_username">E-mail or Username</label>
                     <input type="text" id="email_username" name="identifier" required>
@@ -131,7 +133,7 @@ export const loginRegisterPage = `<div id="loginRegister">
                 </div>
                 <div class="form-group">
                     <label for="age">Age</label>
-                    <input type="number" id="age" name="age" required>
+                    <input type="number" id="age" name="age" required min="7" max="100">
                 </div>
                 <div class="form-group">
                     <label for="gender">Gender</label>
@@ -154,7 +156,7 @@ export const loginRegisterPage = `<div id="loginRegister">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="passwordRegister" name="password" required>
+                    <input type="password" id="passwordRegister" name="password" required minlength="4">
                 </div>
                 <button id="registerButton" type="submit">Register</button>
             </form>
@@ -193,25 +195,26 @@ function toggleForms() {
     }
 }
 
-function getDataForm(form) {
+function getDataForm(form, action) {
     const dataForm = new FormData(form)
     var data = Object.fromEntries(dataForm.entries())
 
-    if (7 > data.age && data.age > 100) {
-        createPopup(`The age selected is not valid`)
-        return 'error'
+    if (action === 'register') {
+        if (7 > data.age && data.age > 100) {
+            createPopup(`The age selected is not valid`)
+            return 'error'
+        }
+    
+        if (data.password.length < 4) {
+            createPopup(`The password is too short`)
+            return 'error'
+        }
+    
+        if (!validateEmail(data.email)) {
+            createPopup(`The email is not valid`)
+            return 'error'
+        }
     }
-
-    if (data.password.length < 4) {
-        createPopup(`The password is too short`)
-        return 'error'
-    }
-
-    if (!validateEmail(data.email)) {
-        createPopup(`The email is not valid`)
-        return 'error'
-    }
-
 
     return data
 }
