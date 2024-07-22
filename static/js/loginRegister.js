@@ -167,6 +167,7 @@ function toggleForms() {
     var loginForm = document.getElementById('loginForm');
     var registerForm = document.getElementById('registerForm');
     if (loginForm.style.display === "none") {
+        const registerFormID = document.getElementById('registerFormID')
         loginForm.classList.remove('fade-out');
         loginForm.classList.add('fade-in');
         registerForm.classList.remove('fade-in');
@@ -174,8 +175,10 @@ function toggleForms() {
         setTimeout(function () {
             loginForm.style.display = "block";
             registerForm.style.display = "none";
+            registerFormID.reset();
         }, 500);
     } else {
+        const loginFormID = document.getElementById('loginFormID')
         loginForm.classList.remove('fade-in');
         loginForm.classList.add('fade-out');
         registerForm.classList.remove('fade-out');
@@ -183,6 +186,7 @@ function toggleForms() {
         setTimeout(function () {
             loginForm.style.display = "none";
             registerForm.style.display = "block";
+            loginFormID.reset();
         }, 500);
     }
 }

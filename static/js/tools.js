@@ -148,8 +148,38 @@ export function onMessage(event) {
             handleUnreadMessage(msg.data)
             break
 
+        case 'startTyping':
+            typing('startTyping', msg.data)
+            break
+
+        case 'stopTyping':
+            typing('stopTyping', msg.data)
+            break
+
         default:
             console.log('Unknown action:', msg.action);
+    }
+}
+
+function typing(action, jsonData) {
+    const typingBlock = document.getElementById('typingBlock')
+    if(!typingBlock) return;
+
+    const data = JSON.parse(jsonData)
+
+    const typingImg = typingBlock.getElementsByTagName('img')[0]
+    const typingTxt = typingBlock.getElementsByTagName('p')[0]
+    const divMessage = document.getElementById('Messages')
+    const idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
+    
+    if(idTalkTo !== data.senderID) return;
+
+    if (action === 'startTyping') {
+        typingTxt.textContent = `is typing`
+        typingImg.src = `./static/images/isTyping.svg`
+    } else if (action === 'stopTyping'){
+        typingTxt.textContent = ''
+        typingImg.src = ''
     }
 }
 
@@ -260,11 +290,7 @@ function setAllUser(jsonData, neww) {
     var newContent = ''
     var tabUser = JSON.parse(jsonData)
 
-    console.log("tabUser: ", tabUser);
-
     if (!tabUser) return
-
-    console.log("app.user: ", app.user);
 
     for (const user of tabUser) {
         const userBlockU = UserBlock.fromObject(user)

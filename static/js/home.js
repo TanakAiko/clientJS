@@ -57,7 +57,7 @@ export async function setHome() {
         listenSubmitPost();
         listenSubmitComment();
         listenSubmitMessage();
-        //addListenerToSendMessageButton();
+        listenInputMessage();
 
 
         app.ws.send(JSON.stringify({ action: "getAllPost" }));
@@ -395,6 +395,53 @@ function listenSubmitMessage() {
     })
 }
 
+function listenInputMessage() {
+    const inputMessage = document.getElementById('inputMessage')
+
+    // Listen for keydown event on a text field, for example
+    inputMessage.addEventListener('keydown', onKeyPress);
+
+    let typingTimer;  // Timer to detect the end of typing
+    let isTyping = false;
+    // Function called when a keypress event is detected
+    function onKeyPress() {
+        clearTimeout(typingTimer);  // Reset the timer
+
+        if (!isTyping) {
+            isTyping = true;
+            const divMessage = document.getElementById('Messages')
+            const receiverId = parseInt(divMessage.getAttribute('data-idTalkTo'))
+            var data = {
+                senderID: app.user.userId,
+                receiverID: receiverId
+            }
+            
+            app.ws.send(JSON.stringify({ action: "startTyping", data: JSON.stringify(data) }));
+        }
+
+        // Set a new timer to detect end of typing
+        typingTimer = setTimeout(function () {
+            isTyping = false;
+            const divMessage = document.getElementById('Messages')
+            const receiverId = parseInt(divMessage.getAttribute('data-idTalkTo'))
+            var data = {
+                senderID: app.user.userId,
+                receiverID: receiverId
+            }
+            
+            app.ws.send(JSON.stringify({ action: "stopTyping", data: JSON.stringify(data) }));
+
+        }, 1000);  // Delay in milliseconds to detect end of typing
+    }
+
+}
+
+
+
+
+
+
+
 
 export const homePage = `<div id="home">
 
@@ -552,6 +599,10 @@ export const homePage = `<div id="home">
 
                     <div id="headMessages">
                         <p></p>
+                        <div id="typingBlock">
+                            <p></p>
+                            <img src="">
+                        </div>
                     </div>
 
                     <div id="MessageBlock"></div>
@@ -560,7 +611,7 @@ export const homePage = `<div id="home">
 
                         <form id="formSendMessage" class="messageForm">
 
-                            <input name="content" type="text" placeholder="    send message">
+                            <input id="inputMessage" name="content" type="text" placeholder="    send message">
                             <div> 
                                 <button id="sendMessageButton">Send</button>
                             </div>
