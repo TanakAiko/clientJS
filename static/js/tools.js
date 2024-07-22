@@ -182,9 +182,10 @@ function typing(action, jsonData) {
     }
 }
 
-function handleUnreadMessage(jsonData) {
+async function handleUnreadMessage(jsonData) {
     const tabIdUser = JSON.parse(jsonData)
     if (tabIdUser === null) return
+    await new Promise(resolve => setTimeout(resolve, 200));
     for (const idTalkTo of tabIdUser) {
         const userBlock = document.getElementById(`${idTalkTo}-user`)
         userBlock.classList.add('unreadMess')
@@ -240,6 +241,15 @@ function markRead(id) {
     app.ws.send(JSON.stringify({ action: "messageStatusRead", data: JSON.stringify(data) }));
 }
 
+function setFirst(idTalkTo) {
+    const divMessage = document.getElementById('Messages')
+    if (!idTalkTo) idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
+    const divUser = document.getElementById(`${idTalkTo}-user`)
+    const divUserViews = document.getElementById('User-view')
+    
+    divUserViews.insertBefore(divUser, divUserViews.firstChild)
+}
+
 function displayCreatedMessage(jsonData) {
     var message = JSON.parse(jsonData)
     var newMsg = Message.fromObject(message)
@@ -248,6 +258,8 @@ function displayCreatedMessage(jsonData) {
     const messageBlock = document.getElementById('MessageBlock')
     messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(app.user.nickname));
     messageBlock.scrollTop = messageBlock.scrollHeight;
+
+    setFirst()
 }
 
 function handleNewMessage(jsonData) {
@@ -264,11 +276,13 @@ function handleNewMessage(jsonData) {
         const messageBlock = document.getElementById('MessageBlock')
         messageBlock.insertAdjacentHTML('beforeend', newMsg.getHtml(nicknameUserToTalk));
         messageBlock.scrollTop = messageBlock.scrollHeight;
-        markRead(newMsg.messageID)
+        markRead(newMsg.messageID);
+        setFirst();
     } else {
         const userBlock = document.getElementById(`${newMsg.senderID}-user`)
         userBlock.classList.add('unreadMess')
         sendNotif(nicknameUserToTalk);
+        setFirst(newMsg.senderID);
     }
 }
 

@@ -3,13 +3,15 @@ import { onClose, onOpen, onError, onMessage, strToInt } from "./tools.js";
 import { getwayURL, wsURL, app } from "./constants.js";
 
 export async function setLoginRegister() {
-    const loginError = document.getElementById('loginError')
-    
     const registerFormID = document.getElementById("registerFormID")
     registerFormID?.addEventListener("submit", async (event) => {
         event.preventDefault()
         const urlRegister = `${getwayURL}/register`
         const data = getDataForm(registerFormID)
+        if (data === 'error') {
+            return
+        }
+
         data.age = strToInt(data.age)
 
         try {
@@ -48,9 +50,9 @@ export async function setLoginRegister() {
             const response = await fetch(urlLogin, requestOptions)
 
             if (!response.ok) {
-                loginError.style.display = 'block'
+                createPopup('Username or Password incorrect.')
                 throw new Error(`HTTP error status: ${response.status}`);
-            } else loginError.style.display = 'none'
+            }
             const result = await response.json()
             app.user = result
 
@@ -194,5 +196,38 @@ function toggleForms() {
 function getDataForm(form) {
     const dataForm = new FormData(form)
     var data = Object.fromEntries(dataForm.entries())
+
+    if (7 > data.age && data.age > 100) {
+        createPopup(`The age selected is not valid`)
+        return 'error'
+    }
+
+    if (data.password.length < 4) {
+        createPopup(`The password is too short`)
+        return 'error'
+    }
+
+    if (!validateEmail(data.email)) {
+        createPopup(`The email is not valid`)
+        return 'error'
+    }
+
+
     return data
 }
+
+function validateEmail(email) {
+    // Expression régulière pour valider une adresse e-mail
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email).toLowerCase());
+}
+
+function createPopup(text) {
+    let el = document.createElement('div');
+    el.classList.add('popup');
+    el.innerHTML = text;
+    document.body.appendChild(el);
+    setTimeout(() => {
+      el.remove();
+    },5000);
+  }

@@ -819,6 +819,27 @@ legend {
   align-items: center;
 }
 
+.popup {
+  position: fixed;
+  bottom: -60px;
+  right: 10px;
+  background: var(--dark-orange);
+  padding: 15px 40px;
+  font-size: 15px;
+  color: var(--white);
+  border-radius: 40px;
+  animation: popup 5s ease-in-out;
+}
+
+@keyframes popup {
+  10%, 90% {
+    bottom: 10px;
+  }
+  100% {
+    bottom: -60px;
+  }
+}
+
 
 
 .shrink {
