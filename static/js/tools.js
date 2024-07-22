@@ -137,7 +137,6 @@ export function onMessage(event) {
                 console.log('Server replied (', msg.action, '): ', msg.data);
                 return
             }
-            console.log('Server replied (', msg.action, '): ', msg.data);
             break
 
         case 'isAllRead':
@@ -284,24 +283,107 @@ function sendNotif(nicknameUserToTalk) {
     iconNotifDiv.classList.add('newNotif')
 }
 
-function setAllUser(jsonData, neww) {
+async function setAllUser(jsonData, neww) {
     if (neww === 'yes') app.ws.send(JSON.stringify({ action: "sendNewUsertoAll" }));
 
     var newContent = ''
     var tabUser = JSON.parse(jsonData)
 
     if (!tabUser) return
+    
+    tabUser.sort((a, b) => {
+        const nameA = a.nickname.toLowerCase();
+        const nameB = b.nickname.toLowerCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+    });
 
-    for (const user of tabUser) {
-        const userBlockU = UserBlock.fromObject(user)
-        if (userBlockU.nickname === app.user.nickname) continue;
-        newContent += userBlockU.getHtml()
+    const urlRegister = `${getwayURL}/getAllChats`
+    try {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+        };
+        const response = await fetch(urlRegister, requestOptions)
+
+        if (!response.ok) {
+            throw new Error(`HTTP error status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+
+        const tabUnique = getUniqueUserIdsSorted(responseData, app.user.userId)
+
+        console.log('tabUnique: ', tabUnique);
+
+        const orderedUsers = orderUsersByUniqueIds(tabUser, tabUnique)
+
+        console.log('orderedUsers: ', orderedUsers);
+        
+        for (const user of orderedUsers) {
+            const userBlockU = UserBlock.fromObject(user)
+            if (userBlockU.nickname === app.user.nickname) continue;
+            newContent += userBlockU.getHtml()
+        }
+    
+        const allUserDiv = document.getElementById('User-view')
+        allUserDiv.innerHTML = newContent
+    
+        addListenerToUser()
+
+    } catch (error) {
+        console.error(`Error while getting all messages: `, error);
+    }
+    
+}
+
+function orderUsersByUniqueIds(tabUser, uniqueUserIds) {
+    const orderedUsers = [];
+
+    for (const id of uniqueUserIds) {
+        for (const user of tabUser) {
+            if (user.userId === id) {
+                orderedUsers.push(user)
+                break
+            }
+        }
     }
 
-    const allUserDiv = document.getElementById('User-view')
-    allUserDiv.innerHTML = newContent
+    for (const user of tabUser) {
+        if (uniqueUserIds.includes(user.userId)) continue
+        orderedUsers.push(user)
+    }
 
-    addListenerToUser()
+    return orderedUsers;
+}
+
+// Fonction pour obtenir les IDs uniques des utilisateurs avec qui on a discuté, ordonnés par la date la plus récente
+function getUniqueUserIdsSorted(tabMessage, myId) {
+
+    tabMessage.reverse();
+
+    console.log('tabMessage: ', tabMessage);
+
+    // Utiliser un Set pour les IDs uniques
+    const uniqueIdsSet = new Set();
+
+    // Parcourir le tableau de messages
+    tabMessage.forEach(message => {
+        // Ajouter senderId et receiverId à l'ensemble (excluant mon propre ID)
+        if (message.senderID !== myId && message.receiverID === myId) {
+            uniqueIdsSet.add(message.senderID);
+        }
+        if (message.receiverID !== myId && message.senderID === myId) {
+            uniqueIdsSet.add(message.receiverID);
+        }
+    });
+
+    // Convertir l'ensemble en tableau et trier par la date la plus récente
+    const uniqueIdsArray = Array.from(uniqueIdsSet);
+
+    return uniqueIdsArray;
 }
 
 async function updateLastComment(jsonData) {
