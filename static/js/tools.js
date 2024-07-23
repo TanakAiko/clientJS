@@ -1,11 +1,11 @@
 import { setLoginRegisterPage } from "./setPage.js";
-import { app, getwayURL } from "./constants.js";
+import { app, getwayURL, messageOffset } from "./constants.js";
 import { Post } from "./post.js";
 import { Comment } from "./comment.js";
 import { UserBlock } from "./userBlock.js";
 import { Message } from "./message.js";
 import { Notif } from "./notif.js";
-import { addListenerToDislike, addListenerToLike, addListenerToComment, addListenerToUser } from "./home.js";
+import { addListenerToDislike, addListenerToLike, addListenerToComment, addListenerToUser, removeListenerFromUser } from "./home.js";
 
 export function onMessage(event) {
     const msg = JSON.parse(event.data);
@@ -162,7 +162,7 @@ export function onMessage(event) {
 
 function typing(action, jsonData) {
     const typingBlock = document.getElementById('typingBlock')
-    if(!typingBlock) return;
+    if (!typingBlock) return;
 
     const data = JSON.parse(jsonData)
 
@@ -170,13 +170,13 @@ function typing(action, jsonData) {
     const typingTxt = typingBlock.getElementsByTagName('p')[0]
     const divMessage = document.getElementById('Messages')
     const idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
-    
-    if(idTalkTo !== data.senderID) return;
+
+    if (idTalkTo !== data.senderID) return;
 
     if (action === 'startTyping') {
         typingTxt.textContent = `is typing`
         typingImg.src = `./static/images/isTyping.svg`
-    } else if (action === 'stopTyping'){
+    } else if (action === 'stopTyping') {
         typingTxt.textContent = ''
         typingImg.src = ''
     }
@@ -203,11 +203,9 @@ function setChat(jsonData) {
     const idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
 
     const tabMessage = JSON.parse(jsonData)
-    console.log('all message: ', tabMessage);
 
     for (const message of tabMessage) {
         var newMsg = Message.fromObject(message)
-        console.log('newMessage: ', newMsg);
 
         if (newMsg.senderID === app.user.userId && newMsg.receiverID === idTalkTo) {
             newMsg.status = 'send'
@@ -228,10 +226,19 @@ function setChat(jsonData) {
 
     const messageBlock = document.getElementById('MessageBlock')
     messageBlock.innerHTML = newContent
-    messageBlock.scrollTop = messageBlock.scrollHeight;
+    //messageBlock.scrollTop = messageBlock.scrollHeight;
+    initializeMessages(messageBlock)
 
     const userBlock = document.getElementById(`${idTalkTo}-user`)
     userBlock.classList.remove('unreadMess')
+}
+
+function initializeMessages(messageBlock) {
+    const messages = messageBlock.children;
+    for (let i = 0; i < messages.length - messageOffset; i++) {
+        messages[i].style.display = "none";
+    }
+    messageBlock.scrollTop = messageBlock.scrollHeight;
 }
 
 function markRead(id) {
@@ -246,8 +253,12 @@ function setFirst(idTalkTo) {
     if (!idTalkTo) idTalkTo = parseInt(divMessage.getAttribute('data-idtalkto'))
     const divUser = document.getElementById(`${idTalkTo}-user`)
     const divUserViews = document.getElementById('User-view')
+
     
     divUserViews.insertBefore(divUser, divUserViews.firstChild)
+    
+    removeListenerFromUser();
+    addListenerToUser();
 }
 
 function displayCreatedMessage(jsonData) {
@@ -304,7 +315,7 @@ async function setAllUser(jsonData, neww) {
     var tabUser = JSON.parse(jsonData)
 
     if (!tabUser) return
-    
+
     tabUser.sort((a, b) => {
         const nameA = a.nickname.toLowerCase();
         const nameB = b.nickname.toLowerCase();
@@ -330,27 +341,23 @@ async function setAllUser(jsonData, neww) {
 
         const tabUnique = getUniqueUserIdsSorted(responseData, app.user.userId)
 
-        console.log('tabUnique: ', tabUnique);
-
         const orderedUsers = orderUsersByUniqueIds(tabUser, tabUnique)
 
-        console.log('orderedUsers: ', orderedUsers);
-        
         for (const user of orderedUsers) {
             const userBlockU = UserBlock.fromObject(user)
             if (userBlockU.nickname === app.user.nickname) continue;
             newContent += userBlockU.getHtml()
         }
-    
+
         const allUserDiv = document.getElementById('User-view')
         allUserDiv.innerHTML = newContent
-    
+
         addListenerToUser()
 
     } catch (error) {
         console.error(`Error while getting all messages: `, error);
     }
-    
+
 }
 
 function orderUsersByUniqueIds(tabUser, uniqueUserIds) {
@@ -480,12 +487,12 @@ async function updatePost(jsonData) {
         item.createAt
     ));
 
+    console.log('tabPost: ', posts);
 
     for (const post of posts) {
         var commentsContent = ""
         var tabComments
         var nbrComment = 0
-        console.log('post: ', post);
         if (post.comments !== 'null') {
             tabComments = JSON.parse(post.comments)
             const comments = tabComments.map(item => new Comment(

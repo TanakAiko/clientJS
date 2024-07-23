@@ -1,4 +1,4 @@
-import { app } from "./constants.js";
+import { app, messageOffset } from "./constants.js";
 import { getCookieValue, strToInt } from "./tools.js";
 
 export async function setHome() {
@@ -13,6 +13,8 @@ export async function setHome() {
     addListenerToDislike(postRow, 'click', 'post')
 
     addListenerToComment(postRow, 'click')
+
+    listenScrollMessage()
 
     const logoutButton = document.getElementById("logoutButton")
     logoutButton?.addEventListener("click", (event) => {
@@ -349,32 +351,86 @@ export function addListenerToDislike(collection, action, element) {
     }
 }
 
+function clickHandler(event) {
+    const divMessage = document.getElementById('Messages');
+    const headMessages = document.getElementById('headMessages');
+    const userId = parseInt(event.currentTarget.getAttribute('data-userId'));
+    const idTalkTo = parseInt(divMessage.getAttribute('data-idTalkTo'))
+
+    if (divMessage.style.display === 'block' && userId === idTalkTo) {
+        divMessage.style.display = 'none';
+        divMessage.setAttribute('data-idTalkTo', 0);
+    } else if (divMessage.style.display !== 'block') {
+        const userNickname = event.currentTarget.getElementsByTagName('p')[0].textContent;
+
+        divMessage.setAttribute('data-talkTo', userNickname);
+        divMessage.setAttribute('data-idTalkTo', userId);
+
+        headMessages.getElementsByTagName('p')[0].textContent = userNickname;
+
+        app.ws.send(JSON.stringify({ action: "messageGets" }));
+
+        divMessage.style.display = 'block';
+    }
+}
 export function addListenerToUser() {
-    const users = document.getElementsByClassName('user')
-    const divMessage = document.getElementById('Messages')
-    const headMessages = document.getElementById('headMessages')
+    const users = document.getElementsByClassName('user');
 
     for (let i = 0; i < users.length; i++) {
-        users[i].addEventListener('click', (event) => {
-            if (divMessage.style.display === 'block') {
-                divMessage.style.display = 'none'
-                divMessage.setAttribute('data-idTalkTo', 0)
-            } else {
-                const userId = parseInt(users[i].getAttribute('data-userId'))
-                const userNickname = users[i].getElementsByTagName('p')[0].textContent
-
-                divMessage.setAttribute('data-talkTo', userNickname);
-                divMessage.setAttribute('data-idTalkTo', userId)
-
-                headMessages.getElementsByTagName('p')[0].textContent = userNickname
-
-                app.ws.send(JSON.stringify({ action: "messageGets" }));
-
-                divMessage.style.display = 'block'
-            }
-        })
-
+        users[i].addEventListener('click', clickHandler);
     }
+}
+
+export function removeListenerFromUser() {
+    const users = document.getElementsByClassName('user');
+
+    for (let i = 0; i < users.length; i++) {
+        users[i].removeEventListener('click', clickHandler);
+    }
+}
+
+function loadMoreMessages() {
+    const messageBlock = document.getElementById('MessageBlock')
+    const messages = messageBlock.children;
+
+    const inVisibleChildren = Array.from(messages).filter(child => {
+        return getComputedStyle(child).display === 'none';
+    });
+
+    if (inVisibleChildren.length === 0) return;
+    
+    var count = 0;
+    for (let i = inVisibleChildren.length - 1; i >= 0; i--) {
+        messages[i].style.display = "block";
+        count++
+        if (count === messageOffset) break;
+    }    
+    
+    const targetIndex = inVisibleChildren.length
+    if (targetIndex >= 0 && targetIndex < messages.length) {
+        messages[targetIndex].scrollIntoView({ behavior: 'instant', block: 'start' });
+    }
+}
+
+function throttle(func, limit) {
+    let lastFunc;
+    let lastRan;
+    return function () {
+        const context = this;
+        const args = arguments;
+        if (!lastRan) {
+            func.apply(context, args);
+            lastRan = Date.now();
+        } else {
+            clearTimeout(lastFunc);
+            lastFunc = setTimeout(function () {
+                if (Date.now() - lastRan >= limit) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                }
+            }, limit - (Date.now() - lastRan));
+        }
+    };
 }
 
 function listenSubmitMessage() {
@@ -415,7 +471,7 @@ function listenInputMessage() {
                 senderID: app.user.userId,
                 receiverID: receiverId
             }
-            
+
             app.ws.send(JSON.stringify({ action: "startTyping", data: JSON.stringify(data) }));
         }
 
@@ -428,7 +484,7 @@ function listenInputMessage() {
                 senderID: app.user.userId,
                 receiverID: receiverId
             }
-            
+
             app.ws.send(JSON.stringify({ action: "stopTyping", data: JSON.stringify(data) }));
 
         }, 1000);  // Delay in milliseconds to detect end of typing
@@ -436,6 +492,19 @@ function listenInputMessage() {
 
 }
 
+function listenScrollMessage() {
+    const messageBlock = document.getElementById('MessageBlock')
+
+    messageBlock.addEventListener(
+        "scroll",
+        throttle(function () {
+            if (messageBlock.scrollTop === 0) {
+                loadMoreMessages();
+            }
+        }, 600)
+    );
+
+}
 
 
 
