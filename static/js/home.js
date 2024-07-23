@@ -408,7 +408,13 @@ function loadMoreMessages() {
     
     const targetIndex = inVisibleChildren.length
     if (targetIndex >= 0 && targetIndex < messages.length) {
-        messages[targetIndex].scrollIntoView({ behavior: 'instant', block: 'start' });
+        
+        const scrollPosition = messages[targetIndex].offsetTop - messageBlock.offsetTop;
+
+        messageBlock.scrollTo({
+            top: scrollPosition,
+            behavior: 'instant'
+        })
     }
 }
 
