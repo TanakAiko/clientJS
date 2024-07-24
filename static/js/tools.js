@@ -536,6 +536,15 @@ async function updatePost(jsonData) {
     addListenerToLike(commentRow, 'click', 'comment')
 
     addListenerToDislike(commentRow, 'click', 'comment')
+
+    const allImagePost = document.getElementsByClassName('postImage')
+    for (let i = 0; i < allImagePost.length; i++) {
+        const img = allImagePost[i];
+        if (img.src === 'data:image/jpeg;base64,') {
+            img.remove()
+        }
+    }
+
 }
 
 async function updateLastPost(jsonData) {
